@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>MediStore Pro — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--g:#00c48c;--gd:#009e72;--gg:rgba(0,196,140,.15);--bg:#0a0f1a;--bg2:#111827;--bg3:#1a2236;--br:rgba(255,255,255,.08);--br2:rgba(255,255,255,.14);--t:#e6edf3;--t2:#8b949e;--t3:#6e7681;--t4:#3d4a58;--red:#ff5c5c;--am:#f5a623;--bl:#4a9eff;--pu:#b06eff;--fb:'Plus Jakarta Sans',sans-serif;--fh:'Instrument Serif',serif}
+html,body{min-height:100vh;font-family:var(--fb);background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:20px;padding-top:max(20px,env(safe-area-inset-top))}
+.box{width:100%;max-width:420px;animation:up .3s ease}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.logo{text-align:center;margin-bottom:28px}
+.logo-mark{width:68px;height:68px;background:linear-gradient(135deg,var(--gd),var(--g));border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 0 40px var(--gg);font-size:32px}
+.logo-name{font-family:var(--fh);font-size:26px;font-style:italic;color:var(--t)}
+.logo-city{font-size:11px;color:var(--t3);letter-spacing:1.8px;text-transform:uppercase;margin-top:4px}
+.roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.role-card{background:var(--bg2);border:1.5px solid var(--br);border-radius:12px;padding:12px;cursor:pointer;transition:all .15s;text-align:center}
+.role-card:active{transform:scale(.97)}
+.role-card.sel{border-color:var(--g);background:rgba(0,196,140,.07)}
+.role-ico{font-size:24px;margin-bottom:5px}
+.role-name{font-size:12px;font-weight:700;color:var(--t)}
+.role-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.card{background:var(--bg2);border:1px solid var(--br);border-radius:16px;padding:22px 20px}
+.card-title{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:18px;display:flex;align-items:center;gap:6px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:6px}
+.input-wrap{position:relative}
+.field input{width:100%;padding:12px 42px;background:var(--bg3);border:1.5px solid var(--br2);border-radius:10px;font-size:14px;font-family:var(--fb);color:var(--t);outline:none;-webkit-appearance:none}
+.field input:focus{border-color:var(--g);box-shadow:0 0 0 3px var(--gg)}
+.field input::placeholder{color:var(--t4)}
+.ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;padding:4px}
+.btn-login{width:100%;padding:14px;background:linear-gradient(135deg,var(--gd),var(--g));color:#000;border:none;border-radius:10px;font-size:14px;font-family:var(--fb);font-weight:700;cursor:pointer;box-shadow:0 4px 20px var(--gg);margin-top:4px}
+.btn-login:active{opacity:.85}
+.err{background:rgba(255,92,92,.1);border:1px solid rgba(255,92,92,.25);border-radius:9px;padding:10px 13px;font-size:13px;color:var(--red);margin-bottom:13px;display:none;align-items:center;gap:6px}
+.creds{margin-top:16px;background:rgba(0,196,140,.04);border:1px solid rgba(0,196,140,.1);border-radius:12px;padding:14px}
+.creds-title{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}
+.cred-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.cred-row:last-child{border:none}
+.cred-ico{font-size:14px}
+.cred-role{font-size:12px;color:var(--t2);font-weight:500}
+.cred-val{font-size:11px;color:var(--g);font-family:monospace;font-weight:700;text-align:right}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div class="logo-mark">🏥</div>
+    <div class="logo-name">MediStore Pro</div>
+    <div class="logo-city">Bellary · Pharmacy Management</div>
+  </div>
+
+  <div class="roles-grid">
+    <div class="role-card" onclick="selectRole('pharmacist_admin',this)">
+      <div class="role-ico">💊</div>
+      <div class="role-name">Pharmacist Admin</div>
+      <div class="role-sub">Full access</div>
+    </div>
+    <div class="role-card" onclick="selectRole('doctor',this)">
+      <div class="role-ico">🩺</div>
+      <div class="role-name">Doctor</div>
+      <div class="role-sub">Consultations</div>
+    </div>
+    <div class="role-card" onclick="selectRole('pharmacist_staff',this)">
+      <div class="role-ico">🧾</div>
+      <div class="role-name">Pharmacist Staff</div>
+      <div class="role-sub">Queue & Bills</div>
+    </div>
+    <div class="role-card" onclick="selectRole('lab_tech',this)">
+      <div class="role-ico">🔬</div>
+      <div class="role-name">Lab Technician</div>
+      <div class="role-sub">Tests & Fees</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔐 Sign In</div>
+    <div class="err" id="err"><span>⚠</span><span id="err-text">Invalid credentials</span></div>
+    <div class="field">
+      <label>Username</label>
+      <div class="input-wrap">
+        <span class="ico">👤</span>
+        <input type="text" id="username" placeholder="Enter username" autocapitalize="none"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <span class="ico">🔒</span>
+        <input type="password" id="password" placeholder="••••••••"/>
+        <button class="eye" onclick="togglePw()" id="eye">👁</button>
+      </div>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+  </div>
+
+
+<script>
+var selRole='';
+function selectRole(r,el){
+  selRole=r;
+  document.querySelectorAll('.role-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  var defaults={pharmacist_admin:'admin',doctor:'doctor1',pharmacist_staff:'pharmacist1',lab_tech:'labtech1'};
+  document.getElementById('username').value=defaults[r]||'';
+}
+
+var pwV=false;
+function togglePw(){pwV=!pwV;document.getElementById('password').type=pwV?'text':'password';document.getElementById('eye').textContent=pwV?'🙈':'👁';}
+
+function showErr(m){var e=document.getElementById('err');document.getElementById('err-text').textContent=m;e.style.display='flex';}
+
+async function doLogin(){
+  var u=document.getElementById('username').value.trim();
+  var p=document.getElementById('password').value;
+  if(!u||!p){showErr('Enter username and password');return;}
+  var btn=document.querySelector('.btn-login');btn.textContent='...';
+  try{
+    var r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    var d=await r.json();
+    if(!r.ok){showErr(d.error||'Invalid credentials');btn.textContent='Sign In →';return;}
+    window.location.href='/';
+  }catch(e){showErr('Server error');btn.textContent='Sign In →';}
+}
+document.getElementById('password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>

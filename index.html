@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>MediStore Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --g:#00c48c;--gd:#009e72;--gg:rgba(0,196,140,.15);--gs:rgba(0,196,140,.08);
+  --red:#ff5c5c;--rs:rgba(255,92,92,.1);
+  --am:#f5a623;--as:rgba(245,166,35,.1);
+  --bl:#4a9eff;--bs:rgba(74,158,255,.1);
+  --pu:#b06eff;--ps:rgba(176,110,255,.1);
+  --teal:#00d4c8;--ts:rgba(0,212,200,.1);
+  --bg:#0a0f1a;--bg2:#111827;--bg3:#1a2236;--bg4:#202b3d;
+  --br:rgba(255,255,255,.06);--br2:rgba(255,255,255,.10);--br3:rgba(255,255,255,.16);
+  --t:#e6edf3;--t2:#8b949e;--t3:#6e7681;--t4:#3d4a58;
+  --r:11px;--rl:15px;--rxl:20px;--sh:0 4px 24px rgba(0,0,0,.5);
+  --fb:'Plus Jakarta Sans',sans-serif;--fh:'Instrument Serif',serif;
+  --top:58px;--bot:64px;
+}
+*,::-webkit-scrollbar{scrollbar-width:thin;scrollbar-color:var(--br2) transparent}
+html,body{height:100%;font-family:var(--fb);background:var(--bg);color:var(--t);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow:hidden}
+
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--br);padding:calc(env(safe-area-inset-top,0px)+10px) 14px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;min-height:var(--top);gap:8px}
+.tb-left{display:flex;align-items:center;gap:8px;min-width:0}
+.tb-logo{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.tb-info{min-width:0}
+.tb-name{font-size:14px;font-weight:700;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-role{font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.tb-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tb-bell{width:32px;height:32px;background:var(--bg3);border:1px solid var(--br2);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;position:relative}
+.tb-bell .dot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg2);display:none}
+.tb-user{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--br2);border-radius:20px;padding:4px 9px 4px 6px;cursor:pointer}
+.tb-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.tb-un{font-size:11px;font-weight:600;color:var(--t2);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── BOTTOM NAV ── */
+.bottom-nav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--br);padding:6px 0 calc(env(safe-area-inset-bottom,0px)+6px);display:flex;justify-content:space-around}
+.bn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 10px;border-radius:9px;cursor:pointer;color:var(--t3);min-width:48px}
+.bn.active{color:var(--g)}
+.bn-ico{font-size:18px;position:relative}
+.bn-cnt{position:absolute;top:-5px;right:-8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 4px;border-radius:10px;min-width:13px;text-align:center;border:1.5px solid var(--bg2)}
+.bn-cnt.gr{background:var(--g);color:#000}
+.bn-lbl{font-size:9px;font-weight:600;white-space:nowrap}
+
+/* ── PAGES ── */
+.pages{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--bot)+env(safe-area-inset-bottom,0px)+8px)}
+.page{display:none;padding:14px;animation:fu .18s ease}
+.page.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ph1{font-family:var(--fh);font-size:22px;font-style:italic;color:var(--t);margin-bottom:2px}
+.ph2{font-size:11px;color:var(--t3);margin-bottom:16px}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);padding:14px 16px;margin-bottom:12px}
+.card-hd{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-hd .ico{font-size:13px}
+
+/* ── METRICS ── */
+.met{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);padding:12px;position:relative;overflow:hidden}
+.met::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.met.cg::after{background:linear-gradient(90deg,transparent,var(--g))}
+.met.cr::after{background:linear-gradient(90deg,transparent,var(--red))}
+.met.ca::after{background:linear-gradient(90deg,transparent,var(--am))}
+.met.cb::after{background:linear-gradient(90deg,transparent,var(--bl))}
+.met.cp::after{background:linear-gradient(90deg,transparent,var(--pu))}
+.met.ct::after{background:linear-gradient(90deg,transparent,var(--teal))}
+.met-ico{font-size:18px;margin-bottom:6px}
+.met-l{font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px}
+.met-v{font-size:21px;font-weight:800;line-height:1}
+.met.cg .met-v{color:var(--g)}.met.cr .met-v{color:var(--red)}.met.ca .met-v{color:var(--am)}.met.cb .met-v{color:var(--bl)}.met.cp .met-v{color:var(--pu)}.met.ct .met-v{color:var(--teal)}
+.met-s{font-size:10px;color:var(--t3);margin-top:2px}
+
+/* ── FORMS ── */
+.fr{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:115px}
+.fg label{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase}
+.fg input,.fg select,.fg textarea{padding:10px 11px;background:var(--bg3);border:1.5px solid var(--br2);border-radius:var(--r);font-size:13px;font-family:var(--fb);color:var(--t);outline:none;-webkit-appearance:none;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px var(--gg)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--t4)}
+.fg select option{background:var(--bg3)}
+.dosage-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.dosage-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+.dosage-item label{font-size:9px;font-weight:700;color:var(--t3);text-align:center}
+.dosage-item input{text-align:center;padding:8px 4px;font-size:14px;font-weight:700}
+
+/* ── BUTTONS ── */
+.btn{padding:10px 15px;border-radius:var(--r);border:1.5px solid var(--br2);background:var(--bg3);cursor:pointer;font-size:13px;font-family:var(--fb);font-weight:600;color:var(--t);transition:opacity .12s;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;-webkit-appearance:none}
+.btn:active{opacity:.7}
+.btn .ico{font-size:14px}
+.bp{background:var(--g);color:#000;border-color:var(--g)}.bp:active{background:var(--gd)}
+.bd{background:var(--rs);color:var(--red);border-color:rgba(255,92,92,.25)}
+.bs{background:var(--gs);color:var(--g);border-color:rgba(0,196,140,.25)}
+.bb2{background:var(--bs);color:var(--bl);border-color:rgba(74,158,255,.25)}
+.ba2{background:var(--as);color:var(--am);border-color:rgba(245,166,35,.25)}
+.bfull{width:100%}
+.bsm{padding:5px 9px;font-size:11px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--br);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:440px}
+thead th{background:var(--bg3);padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--br);white-space:nowrap}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--br);color:var(--t);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:active td{background:var(--bg3)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid}
+.bg2{background:var(--gs);color:var(--g);border-color:rgba(0,196,140,.25)}
+.br2{background:var(--rs);color:var(--red);border-color:rgba(255,92,92,.25)}
+.ba3{background:var(--as);color:var(--am);border-color:rgba(245,166,35,.25)}
+.bb3{background:var(--bs);color:var(--bl);border-color:rgba(74,158,255,.25)}
+.bgy{background:rgba(255,255,255,.05);color:var(--t2);border-color:var(--br2)}
+.bt2{background:var(--ts);color:var(--teal);border-color:rgba(0,212,200,.25)}
+.bp2{background:var(--ps);color:var(--pu);border-color:rgba(176,110,255,.25)}
+
+/* ── ALERT ITEMS ── */
+.al{border-radius:var(--r);padding:10px 12px;margin-bottom:7px;display:flex;align-items:flex-start;gap:9px;border:1px solid}
+.al.exp{background:rgba(255,92,92,.06);border-color:rgba(255,92,92,.2);border-left:3px solid var(--red)}
+.al.stk{background:rgba(245,166,35,.06);border-color:rgba(245,166,35,.2);border-left:3px solid var(--am)}
+.al.oos{background:rgba(176,110,255,.06);border-color:rgba(176,110,255,.2);border-left:3px solid var(--pu)}
+.al .ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.al-t{font-size:12px;font-weight:700;margin-bottom:2px}
+.al-d{font-size:11px;opacity:.7}
+
+/* ── QUEUE ITEMS ── */
+.qi{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);padding:12px 13px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.q-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.q-av.normal{background:var(--gs);color:var(--g)}.q-av.urgent{background:var(--rs);color:var(--red)}.q-av.senior{background:var(--bs);color:var(--bl)}
+.q-n{font-size:13px;font-weight:600}.q-d{font-size:11px;color:var(--t3);margin-top:2px}.q-tm{font-size:10px;color:var(--t4);margin-top:3px}
+.q-acts{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+
+/* ── SERVED CARDS ── */
+.sc{background:var(--bg2);border:1px solid var(--br);border-radius:var(--rl);padding:11px 13px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px}
+.s-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+
+/* ── PRESCRIPTION PREVIEW ── */
+.rx-card{background:var(--bg3);border:1px solid var(--br2);border-radius:var(--r);padding:11px 13px;margin-bottom:8px}
+.rx-name{font-size:13px;font-weight:700;color:var(--t)}
+.rx-dosage{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.rx-dose-slot{background:var(--bg4);border:1px solid var(--br2);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600;text-align:center}
+.rx-dose-slot.active{background:rgba(0,196,140,.12);border-color:rgba(0,196,140,.25);color:var(--g)}
+.rx-info{font-size:11px;color:var(--t3);margin-top:4px}
+
+/* ── BILL PREVIEW ── */
+.bill-wrap{background:#fff;color:#111;border-radius:var(--rl);padding:18px;margin-bottom:12px}
+.bill-ph{font-size:17px;font-weight:800;color:#111;text-align:center;font-family:var(--fh);font-style:italic}
+.bill-sub{font-size:10px;color:#888;text-align:center;margin-top:2px}
+.bill-no{display:inline-block;background:#e8faf3;color:#009e72;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px}
+.bill-sep{border:none;border-top:2px dashed #ddd;margin:10px 0}
+.bill-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f8f9fa;border-radius:7px;padding:9px;font-size:11px;margin-bottom:10px}
+.bill-meta span:first-child{color:#888}.bill-meta span:last-child{font-weight:600;color:#111}
+.bill-tbl{width:100%;border-collapse:collapse;font-size:11px}
+.bill-tbl th{background:#f8f9fa;padding:6px 7px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;color:#666;border-bottom:1px solid #eee}
+.bill-tbl td{padding:7px 7px;border-bottom:1px solid #eee;color:#333;vertical-align:top}
+.bill-tbl tr:last-child td{border-bottom:none}
+.bill-tot-row{display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-top:2px solid #111;margin-top:3px}
+.bill-tot-l{font-size:13px;font-weight:700;color:#111}
+.bill-tot-v{font-size:18px;font-weight:800;color:#009e72;font-family:var(--fh);font-style:italic}
+.bill-footer{text-align:center;font-size:10px;color:#999;margin-top:9px;padding-top:8px;border-top:1px dashed #ddd}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--br2);border-radius:var(--rxl) var(--rxl) 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));width:100%;max-width:520px;animation:su .22s ease;max-height:88vh;overflow-y:auto}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-drag{width:36px;height:4px;background:var(--br2);border-radius:2px;margin:0 auto 13px}
+.modal h3{font-family:var(--fh);font-size:18px;font-style:italic;color:var(--t);margin-bottom:3px}
+.modal p{font-size:12px;color:var(--t3);margin-bottom:13px}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+
+/* ── DROPDOWN ── */
+.dd-wrap{position:absolute;top:calc(var(--top) + env(safe-area-inset-top,0px));right:10px;z-index:300}
+.dd-menu{background:var(--bg2);border:1px solid var(--br2);border-radius:var(--rl);box-shadow:var(--sh);min-width:190px;display:none;animation:fu .15s ease;overflow:hidden}
+.dd-menu.open{display:block}
+.dd-user{padding:12px 14px;border-bottom:1px solid var(--br)}
+.dd-un{font-weight:700;font-size:13px;color:var(--t)}
+.dd-role{font-size:10px;color:var(--g);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.dd-item{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;color:var(--t);font-size:12px}
+.dd-item:active{background:var(--bg3)}
+.dd-item .ico{font-size:14px}
+.dd-sep{height:1px;background:var(--br)}
+
+/* ── FILTER ── */
+.fbar{display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap}
+.fbar input,.fbar select{padding:9px 10px;background:var(--bg3);border:1.5px solid var(--br2);border-radius:var(--r);font-size:13px;font-family:var(--fb);color:var(--t);outline:none;-webkit-appearance:none}
+.fbar input:focus,.fbar select:focus{border-color:var(--g)}
+.fbar input{flex:1;min-width:130px}
+.fbar select option{background:var(--bg3)}
+
+/* ── STOCK BAR ── */
+.sbar{width:50px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
+.sbar-f{height:100%;border-radius:2px}
+
+/* ── TABS ── */
+.tabs{display:flex;background:var(--bg3);border-radius:var(--r);padding:3px;margin-bottom:12px;width:fit-content}
+.tab{padding:6px 14px;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;color:var(--t3)}
+.tab.active{background:var(--bg2);color:var(--t);box-shadow:0 1px 5px rgba(0,0,0,.4)}
+
+/* ── PROFIT BREAKDOWN ── */
+.profit-box{background:var(--bg3);border:1px solid var(--br2);border-radius:var(--r);padding:12px;margin-bottom:8px}
+.profit-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--br)}
+.profit-row:last-child{border:none;padding-top:8px;margin-top:2px}
+.profit-row.total{border-top:1px solid var(--br2);font-weight:700}
+.profit-label{font-size:12px;color:var(--t2)}
+.profit-val{font-size:13px;font-weight:700}
+
+/* ── FEE SUMMARY ── */
+.fee-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--br)}
+.fee-row:last-child{border:none}
+.fee-label{font-size:12px;color:var(--t2)}
+.fee-val{font-size:13px;font-weight:700;color:var(--g)}
+.payment-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
+.pm-cash{background:var(--gs);color:var(--g);border:1px solid rgba(0,196,140,.2)}
+.pm-upi{background:var(--ps);color:var(--pu);border:1px solid rgba(176,110,255,.2)}
+.pm-online{background:var(--bs);color:var(--bl);border:1px solid rgba(74,158,255,.2)}
+.pm-pending{background:var(--rs);color:var(--red);border:1px solid rgba(255,92,92,.2)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:24px 14px;color:var(--t3)}
+.empty .ico{font-size:26px;display:block;margin-bottom:7px;opacity:.35}
+.empty p{font-size:12px}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:calc(var(--top)+env(safe-area-inset-top,0px)+7px);left:10px;right:10px;z-index:999;display:flex;flex-direction:column;gap:5px;pointer-events:none}
+.toast{background:var(--bg2);border:1px solid var(--br2);color:var(--t);padding:10px 13px;border-radius:var(--r);font-size:12px;font-weight:500;box-shadow:var(--sh);display:flex;align-items:center;gap:8px;animation:sid .2s ease;pointer-events:auto}
+.toast .ico{font-size:14px}
+.toast.success{border-left:3px solid var(--g)}.toast.error{border-left:3px solid var(--red)}.toast.warning{border-left:3px solid var(--am)}.toast.info{border-left:3px solid var(--bl)}
+@keyframes sid{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CANCELLED OVERLAY ── */
+.cancelled-tag{background:rgba(255,92,92,.1);color:var(--red);border:1px solid rgba(255,92,92,.3);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;display:inline-block}
+
+@media print{.app>*:not(.pages){display:none!important}.pages{overflow:visible!important;padding:0}.bottom-nav,.topbar{display:none!important}.page{display:none!important}#sec-billing{display:block!important}.bill-wrap{box-shadow:none;border-radius:0}.card:not(:has(.bill-wrap)){display:none}}
+@media(min-width:640px){.g2{grid-template-columns:repeat(3,1fr)}.g3{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- TOASTS -->
+<div class="toast-wrap" id="toasts"></div>
+
+<!-- DROPDOWN -->
+<div class="dd-wrap" id="dd-wrap">
+  <div class="dd-menu" id="dd-menu">
+    <div class="dd-user"><div class="dd-un" id="dd-un">User</div><div class="dd-role" id="dd-role">Role</div></div>
+    <div class="dd-item" onclick="openModal('pw-modal')"><span class="ico">🔑</span>Change Password</div>
+    <div class="dd-sep"></div>
+    <div class="dd-item" onclick="doLogout()" style="color:var(--red)"><span class="ico">🚪</span>Sign Out</div>
+  </div>
+</div>
+
+<!-- SERVE MODAL -->
+<div id="serve-modal" class="modal-bg" onclick="if(event.target===this)closeModal('serve-modal')">
+  <div class="modal"><div class="modal-drag"></div>
+    <h3>Mark as Served</h3>
+    <p>Patient: <strong id="serve-pt-name" style="color:var(--t)"></strong></p>
+    <div class="fg"><label>Notes (optional)</label><textarea id="serve-notes" rows="2" placeholder="e.g. Directed to pharmacy..." style="resize:none"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('serve-modal')">Cancel</button>
+      <button class="btn bs" onclick="confirmServe()"><span>✓</span> Served</button>
+    </div>
+  </div>
+</div>
+
+<!-- CANCEL MODAL -->
+<div id="cancel-modal" class="modal-bg" onclick="if(event.target===this)closeModal('cancel-modal')">
+  <div class="modal"><div class="modal-drag"></div>
+    <h3>Cancel Record</h3>
+    <p id="cancel-desc" style="color:var(--t3)">This will cancel the selected record.</p>
+    <div class="fg"><label>Reason for Cancellation *</label><input type="text" id="cancel-reason" placeholder="Enter reason..."/></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('cancel-modal')">Go Back</button>
+      <button class="btn bd" onclick="confirmCancel()"><span>✕</span> Confirm Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="pw-modal" class="modal-bg" onclick="if(event.target===this)closeModal('pw-modal')">
+  <div class="modal"><div class="modal-drag"></div>
+    <h3>Change Password</h3>
+    <div class="fg" style="margin-bottom:10px"><label>Current Password</label><input type="password" id="pw-cur"/></div>
+    <div class="fg" style="margin-bottom:10px"><label>New Password</label><input type="password" id="pw-new"/></div>
+    <div class="fg" style="margin-bottom:14px"><label>Confirm New Password</label><input type="password" id="pw-cf"/></div>
+    <div id="pw-err" style="display:none;color:var(--red);font-size:12px;margin-bottom:10px;padding:8px;background:var(--rs);border-radius:var(--r)"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal('pw-modal')">Cancel</button>
+      <button class="btn bp" onclick="changePw()"><span>💾</span> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo" id="tb-logo">🏥</div>
+    <div class="tb-info">
+      <div class="tb-name" id="tb-name">MediStore Pro</div>
+      <div class="tb-role" id="tb-role">Loading...</div>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="tb-bell" onclick="nav('alerts')"><span>🔔</span><div class="dot" id="alert-dot"></div></div>
+    <div class="tb-user" onclick="toggleDD()">
+      <div class="tb-av" id="tb-av" style="background:var(--gs);color:var(--g)">U</div>
+      <span class="tb-un" id="tb-un">user</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="pages" id="pages-wrap">
+
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page active" id="sec-dashboard">
+  <div class="ph1" id="dash-greet">Dashboard</div>
+  <div class="ph2" id="dash-sub">Bellary · MediStore Pro</div>
+
+  <!-- Doctor stats -->
+  <div id="doctor-stats" style="display:none">
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd"><span class="ico">📊</span>Today's Summary</div>
+      <div class="g2" style="margin-bottom:10px">
+        <div class="met cb"><div class="met-ico">👤</div><div class="met-l">Patients Today</div><div class="met-v" id="d-pt-count">0</div></div>
+        <div class="met cg"><div class="met-ico">💰</div><div class="met-l">Consultation Fee</div><div class="met-v" id="d-fee-total">₹0</div></div>
+      </div>
+      <div class="g3">
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Cash</div>
+          <div style="font-size:16px;font-weight:800;color:var(--g)" id="d-fee-cash">₹0</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">UPI</div>
+          <div style="font-size:16px;font-weight:800;color:var(--pu)" id="d-fee-upi">₹0</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--r);padding:10px;text-align:center">
+          <div style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Online</div>
+          <div style="font-size:16px;font-weight:800;color:var(--bl)" id="d-fee-online">₹0</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="ico">👥</span>Queue <span class="badge bg2" id="d-q-cnt">0</span></div>
+      <div id="d-queue-preview"></div>
+    </div>
+  </div>
+
+  <!-- Pharmacist admin stats -->
+  <div id="pharma-admin-stats" style="display:none">
+    <div class="g3" style="margin-bottom:10px">
+      <div class="met cb"><div class="met-ico">💊</div><div class="met-l">Medicines</div><div class="met-v" id="pa-meds">—</div></div>
+      <div class="met cr"><div class="met-ico">⚠️</div><div class="met-l">Expiry</div><div class="met-v" id="pa-exp">—</div></div>
+      <div class="met ca"><div class="met-ico">📉</div><div class="met-l">Low Stock</div><div class="met-v" id="pa-stk">—</div></div>
+    </div>
+    <div class="g3" style="margin-bottom:12px">
+      <div class="met ca"><div class="met-ico">👥</div><div class="met-l">Queue</div><div class="met-v" id="pa-q">—</div></div>
+      <div class="met cp"><div class="met-ico">🩺</div><div class="met-l">Consults</div><div class="met-v" id="pa-con">—</div></div>
+      <div class="met ct"><div class="met-ico">🔬</div><div class="met-l">Lab Tests</div><div class="met-v" id="pa-lab">—</div></div>
+    </div>
+    <!-- Profit breakdown -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hd"><span class="ico">📈</span>Profit Breakdown — All Time</div>
+      <div class="profit-box">
+        <div class="profit-row"><span class="profit-label">💊 Medicine Profit</span><span class="profit-val" style="color:var(--g)" id="pa-med-profit">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🩺 Consultation Fees</span><span class="profit-val" style="color:var(--bl)" id="pa-consult-profit">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🔬 Lab Test Fees</span><span class="profit-val" style="color:var(--teal)" id="pa-lab-profit">₹0</span></div>
+        <div class="profit-row total"><span class="profit-label" style="color:var(--t)">Net Profit</span><span class="profit-val" style="color:var(--g);font-size:16px" id="pa-net-profit">₹0</span></div>
+      </div>
+    </div>
+    <!-- Monthly breakdown -->
+    <div class="card">
+      <div class="card-hd"><span class="ico">📅</span>This Month's Profit</div>
+      <div class="profit-box">
+        <div class="profit-row"><span class="profit-label">💊 Medicine Sales</span><span class="profit-val" style="color:var(--g)" id="pa-m-med">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🩺 Consultation Fees</span><span class="profit-val" style="color:var(--bl)" id="pa-m-con">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🔬 Lab Fees</span><span class="profit-val" style="color:var(--teal)" id="pa-m-lab">₹0</span></div>
+        <div class="profit-row total"><span class="profit-label" style="color:var(--t)">Monthly Total</span><span class="profit-val" style="color:var(--g);font-size:16px" id="pa-m-total">₹0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pharmacist staff & lab tech stats -->
+  <div id="staff-stats" style="display:none">
+    <div class="g2" style="margin-bottom:10px">
+      <div class="met cb"><div class="met-ico">👥</div><div class="met-l">Queue</div><div class="met-v" id="st-q">—</div></div>
+      <div class="met cp"><div class="met-ico">✅</div><div class="met-l">Served</div><div class="met-v" id="st-srv">—</div></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="ico">👥</span>Patient Queue</div>
+      <div id="st-queue-preview"></div>
+    </div>
+  </div>
+
+  <!-- Alerts preview (all roles) -->
+  <div class="card" id="dash-alerts-preview">
+    <div class="card-hd"><span class="ico">⚠️</span>Alerts</div>
+    <div id="d-alerts-list"></div>
+  </div>
+</div>
+
+<!-- ═══ DOCTOR CONSULTATION ═══ -->
+<div class="page" id="sec-consultation">
+  <div class="ph1">New Consultation</div>
+  <div class="ph2">Create prescription & record fee</div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">👤</span>Patient Info</div>
+    <div class="fr">
+      <div class="fg"><label>Patient Name *</label><input type="text" id="c-name" placeholder="Full name"/></div>
+      <div class="fg"><label>Age</label><input type="number" id="c-age" placeholder="Age" inputmode="numeric"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Consultation Fee (₹)</label><input type="number" id="c-fee" placeholder="300" inputmode="decimal" step="0.01"/></div>
+      <div class="fg"><label>Payment Method</label>
+        <select id="c-payment">
+          <option value="cash">💵 Cash</option>
+          <option value="upi">📱 UPI</option>
+          <option value="online">🌐 Online</option>
+          <option value="pending">⏳ Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Payment Status</label>
+        <select id="c-pay-status">
+          <option value="paid">✅ Paid</option>
+          <option value="pending">⏳ Pending</option>
+          <option value="waived">🎁 Waived</option>
+        </select>
+      </div>
+      <div class="fg"><label>Date</label><input type="date" id="c-date"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:6px"><label>Notes / Diagnosis</label><textarea id="c-notes" rows="2" placeholder="Diagnosis, observations..." style="resize:none"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><span class="ico">💊</span>Add Prescribed Medicine</div>
+    <div class="fr">
+      <div class="fg"><label>Medicine Name</label>
+        <input type="text" id="rx-med-name" placeholder="Medicine name" list="med-list"/>
+        <datalist id="med-list"></datalist>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px">Dosage (tablets per session)</div>
+      <div class="dosage-row">
+        <div class="dosage-item"><label>🌅 Morn</label><input type="number" id="rx-d-morn" value="0" min="0" inputmode="numeric" class="dosage-input"/></div>
+        <div class="dosage-item"><label>☀️ Aft</label><input type="number" id="rx-d-aft" value="0" min="0" inputmode="numeric" class="dosage-input"/></div>
+        <div class="dosage-item"><label>🌆 Eve</label><input type="number" id="rx-d-eve" value="0" min="0" inputmode="numeric" class="dosage-input"/></div>
+        <div class="dosage-item"><label>🌙 Night</label><input type="number" id="rx-d-night" value="0" min="0" inputmode="numeric" class="dosage-input"/></div>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Qty (tablets)</label><input type="number" id="rx-qty" placeholder="e.g. 30" inputmode="numeric"/></div>
+      <div class="fg"><label>Days</label><input type="number" id="rx-days" placeholder="e.g. 5" inputmode="numeric"/></div>
+    </div>
+    <div class="fg" style="margin-bottom:8px"><label>Instructions</label><input type="text" id="rx-instr" placeholder="e.g. After meals with warm water"/></div>
+    <button class="btn bp bfull" onclick="addRxItem()" style="margin-top:2px"><span class="ico">➕</span> Add Medicine</button>
+    <div id="rx-list" style="margin-top:12px"></div>
+  </div>
+
+  <div class="btns">
+    <button class="btn bp" onclick="saveConsultation()" style="flex:1"><span class="ico">💾</span> Save & Send to Pharmacist</button>
+    <button class="btn bd bsm" onclick="clearConsultation()">Clear</button>
+  </div>
+</div>
+
+<!-- ═══ CONSULTATION HISTORY (Doctor) ═══ -->
+<div class="page" id="sec-consult-history">
+  <div class="ph1">Consultation History</div>
+  <div class="ph2">All patient consultations</div>
+  <div class="fbar">
+    <input type="text" placeholder="Search patient..." id="ch-search" oninput="renderConsultHistory()"/>
+    <select id="ch-filter" onchange="renderConsultHistory()">
+      <option value="all">All</option>
+      <option value="today">Today</option>
+      <option value="active">Active</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:8px" id="ch-count"></div>
+  <div id="consult-history-list"></div>
+</div>
+
+<!-- ═══ PHARMACIST INVENTORY ═══ -->
+<div class="page" id="sec-inventory">
+  <div class="ph1">Inventory</div>
+  <div class="ph2">Medicines · stock = bought + free samples</div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">➕</span>Add Medicine</div>
+    <div class="fr">
+      <div class="fg"><label>Name *</label><input type="text" id="m-name" placeholder="Medicine name"/></div>
+      <div class="fg"><label>Category</label>
+        <select id="m-cat"><option>Tablet</option><option>Capsule</option><option>Syrup</option><option>Injection</option><option>Ointment</option><option>Drops</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Manufacturer</label><input type="text" id="m-mfr" placeholder="Company"/></div>
+      <div class="fg"><label>Batch No.</label><input type="text" id="m-batch" placeholder="BT2024001"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Buy ₹</label><input type="number" id="m-buy" placeholder="0.00" step="0.01" inputmode="decimal"/></div>
+      <div class="fg"><label>Sell ₹</label><input type="number" id="m-sell" placeholder="0.00" step="0.01" inputmode="decimal"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Qty Bought</label><input type="number" id="m-qty" placeholder="100" inputmode="numeric"/></div>
+      <div class="fg"><label>Free Samples</label><input type="number" id="m-free" placeholder="0" inputmode="numeric"/></div>
+    </div>
+    <div style="background:var(--bg3);border-radius:var(--r);padding:9px 11px;font-size:12px;color:var(--t2);margin-bottom:10px">
+      📦 Total stock = <strong id="stock-preview" style="color:var(--g)">0</strong> (bought <span id="sp-qty">0</span> + free <span id="sp-free">0</span>)
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Buy Date</label><input type="date" id="m-bdate"/></div>
+      <div class="fg"><label>Expiry Date *</label><input type="date" id="m-expiry"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Low Stock Alert (units)</label><input type="number" id="m-thr" value="50" inputmode="numeric"/></div>
+    </div>
+    <button class="btn bp bfull" onclick="addMedicine()" style="margin-top:4px"><span class="ico">➕</span> Add to Inventory</button>
+  </div>
+  <div class="card">
+    <div class="fbar">
+      <input type="text" placeholder="Search..." id="inv-search" oninput="renderInventory()"/>
+      <select id="inv-filter" onchange="renderInventory()">
+        <option value="all">All</option>
+        <option value="lowstock">Low Stock</option>
+        <option value="expiring">Expiring Soon</option>
+        <option value="expired">Expired</option>
+      </select>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:8px" id="inv-count"></div>
+    <div class="tw"><table>
+      <thead><tr><th>Medicine</th><th>Stock</th><th>Buy ₹</th><th>Sell ₹</th><th>Expiry</th><th>Status</th><th></th></tr></thead>
+      <tbody id="inv-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══ BILLING ═══ -->
+<div class="page" id="sec-billing">
+  <div class="ph1">Billing</div>
+  <div class="ph2">Create medicine bills · prescriptions auto-loaded</div>
+  <!-- Pending prescriptions from doctor -->
+  <div id="pending-rx-section" style="display:none">
+    <div class="card" style="border-color:rgba(0,196,140,.2)">
+      <div class="card-hd" style="color:var(--g)"><span class="ico">🩺</span>Pending Prescriptions from Doctor</div>
+      <div id="pending-rx-list"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><span class="ico">👤</span>Patient Info</div>
+    <div class="fr">
+      <div class="fg"><label>Patient Name</label><input type="text" id="b-patient" oninput="updateBillPreview()" placeholder="Full name"/></div>
+      <div class="fg"><label>Age</label><input type="number" id="b-age" oninput="updateBillPreview()" placeholder="Age" inputmode="numeric"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Doctor</label><input type="text" id="b-doctor" oninput="updateBillPreview()" placeholder="Dr. Name"/></div>
+      <div class="fg"><label>Date</label><input type="date" id="b-date" oninput="updateBillPreview()"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Discount (₹)</label><input type="number" id="b-discount" value="0" oninput="updateBillPreview()" inputmode="decimal"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><span class="ico">💊</span>Add Medicine</div>
+    <div class="fg" style="margin-bottom:10px"><label>Select Medicine</label><select id="b-med"><option value="">Choose medicine...</option></select></div>
+    <div class="fr">
+      <div class="fg"><label>Qty</label><input type="number" id="b-units" placeholder="10" inputmode="numeric"/></div>
+      <div class="fg"><label>Dosage</label><input type="text" id="b-dosage" placeholder="1-0-1"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Days</label><input type="number" id="b-days" placeholder="Days" inputmode="numeric"/></div>
+      <div class="fg"><label>Instructions</label><input type="text" id="b-instr" placeholder="After meals"/></div>
+    </div>
+    <button class="btn bp bfull" onclick="addBillItem()" style="margin-top:4px"><span class="ico">➕</span> Add to Bill</button>
+    <div id="bill-item-list" style="margin-top:10px"></div>
+  </div>
+
+  <!-- Bill Preview -->
+  <div class="bill-wrap" id="bill-print-area">
+    <div style="text-align:center;margin-bottom:10px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:#009e72;text-transform:uppercase;margin-bottom:2px">Medicine Bill</div>
+      <div class="bill-ph" id="bp-pharmacy-name">MediStore Pro</div>
+      <div class="bill-sub" id="bp-pharmacy-city">Bellary</div>
+      <div class="bill-no" id="b-bno">BILL #0001</div>
+    </div>
+    <hr class="bill-sep"/>
+    <div class="bill-meta">
+      <span>Patient</span><span id="bp-name">—</span>
+      <span>Age</span><span id="bp-age">—</span>
+      <span>Doctor</span><span id="bp-doc">—</span>
+      <span>Date</span><span id="bp-date">—</span>
+    </div>
+    <table class="bill-tbl">
+      <thead><tr><th>#</th><th>Medicine</th><th>Dosage</th><th>Days</th><th>Qty</th><th style="text-align:right">₹</th></tr></thead>
+      <tbody id="bill-prev-body"></tbody>
+    </table>
+    <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:11px;color:#888"><span>Subtotal</span><span id="b-subtotal-d">₹0.00</span></div>
+    <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:11px;color:#e05a4a"><span>Discount</span><span id="b-discount-d">₹0.00</span></div>
+    <div class="bill-tot-row"><div class="bill-tot-l">Total</div><div class="bill-tot-v" id="bill-total">₹0.00</div></div>
+    <div class="bill-footer" id="bill-footer-text">Thank you! Visit again.</div>
+  </div>
+  <div class="card no-print" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button class="btn bp" onclick="printBill()"><span class="ico">🖨️</span> Print</button>
+    <button class="btn bs" onclick="saveBill()"><span class="ico">💾</span> Save Bill</button>
+    <button class="btn bd" onclick="clearBill()">Clear</button>
+  </div>
+
+  <!-- Bills list -->
+  <div class="card" style="margin-top:4px">
+    <div class="card-hd"><span class="ico">📋</span>All Bills</div>
+    <div class="fbar">
+      <input type="text" placeholder="Search patient..." id="bill-search" oninput="renderBills()"/>
+      <select id="bill-filter" onchange="renderBills()">
+        <option value="all">All</option><option value="active">Active</option><option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div id="bills-list"></div>
+  </div>
+</div>
+
+<!-- ═══ QUEUE ═══ -->
+<div class="page" id="sec-queue">
+  <div class="ph1">Patient Queue</div>
+  <div class="ph2">Waiting patients · all roles can manage</div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">➕</span>Add Patient</div>
+    <div class="fr">
+      <div class="fg"><label>Name</label><input type="text" id="q-name" placeholder="Patient name"/></div>
+      <div class="fg"><label>Age</label><input type="number" id="q-age" placeholder="Age" inputmode="numeric"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Issue / Reason</label><input type="text" id="q-issue" placeholder="Fever, refill, tests..."/></div>
+      <div class="fg"><label>Priority</label>
+        <select id="q-pri"><option value="normal">Normal</option><option value="urgent">Urgent</option><option value="senior">Senior</option></select>
+      </div>
+    </div>
+    <button class="btn bp bfull" onclick="addQueue()"><span class="ico">➕</span> Add to Queue</button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:600;color:var(--t2)">Waiting <span class="badge bg2" id="q-cnt">0</span></div>
+    <div style="font-size:11px;color:var(--t3)">Sorted by priority</div>
+  </div>
+  <div id="queue-list"></div>
+</div>
+
+<!-- ═══ SERVED PATIENTS ═══ -->
+<div class="page" id="sec-served">
+  <div class="ph1">Served Patients</div>
+  <div class="ph2">Complete history · stored in database</div>
+  <div class="fbar">
+    <input type="text" placeholder="Search..." id="srv-search" oninput="renderServed()"/>
+    <select id="srv-filter" onchange="renderServed()">
+      <option value="all">All time</option><option value="today">Today</option><option value="week">This week</option>
+    </select>
+  </div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:9px" id="srv-cnt-lbl"></div>
+  <div id="served-list"></div>
+</div>
+
+<!-- ═══ ALERTS ═══ -->
+<div class="page" id="sec-alerts">
+  <div class="ph1">Alerts</div>
+  <div class="ph2">Expiry & low stock warnings</div>
+  <div class="card">
+    <div class="card-hd" style="color:var(--red)"><span class="ico">⚠️</span>Expiry Alerts <span class="badge br2" id="exp-cnt">0</span></div>
+    <div id="exp-list"><div class="empty"><p>No expiry alerts</p></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hd" style="color:var(--am)"><span class="ico">📉</span>Low Stock <span class="badge ba3" id="stk-cnt">0</span></div>
+    <div id="stk-list"><div class="empty"><p>All medicines stocked</p></div></div>
+  </div>
+</div>
+
+<!-- ═══ LAB TESTS ═══ -->
+<div class="page" id="sec-lab">
+  <div class="ph1">Lab Tests</div>
+  <div class="ph2">Add tests · fees reflected everywhere</div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">🔬</span>New Lab Test</div>
+    <div class="fr">
+      <div class="fg"><label>Patient Name *</label><input type="text" id="lt-name" placeholder="Full name"/></div>
+      <div class="fg"><label>Age</label><input type="number" id="lt-age" placeholder="Age" inputmode="numeric"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Referred Doctor</label><input type="text" id="lt-doc" placeholder="Dr. Name"/></div>
+      <div class="fg"><label>Date</label><input type="date" id="lt-date"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Payment Method</label>
+        <select id="lt-payment"><option value="cash">💵 Cash</option><option value="upi">📱 UPI</option><option value="online">🌐 Online</option><option value="pending">⏳ Pending</option></select>
+      </div>
+      <div class="fg"><label>Payment Status</label>
+        <select id="lt-pay-status"><option value="paid">✅ Paid</option><option value="pending">⏳ Pending</option></select>
+      </div>
+    </div>
+    <div class="card-hd" style="margin-top:4px"><span class="ico">➕</span>Add Test Items</div>
+    <div class="fr">
+      <div class="fg"><label>Test Name</label><input type="text" id="lt-tname" placeholder="e.g. CBC, Blood Sugar"/></div>
+      <div class="fg"><label>Fee (₹)</label><input type="number" id="lt-tfee" placeholder="0" inputmode="decimal" step="0.01"/></div>
+    </div>
+    <button class="btn bb2 bfull" onclick="addLabTestItem()" style="margin-bottom:10px"><span class="ico">➕</span> Add Test</button>
+    <div id="lt-items-list" style="margin-bottom:10px"></div>
+    <div style="background:var(--bg3);border-radius:var(--r);padding:9px 11px;font-size:13px;color:var(--t2);margin-bottom:10px">
+      Total Fee: <strong style="color:var(--g)" id="lt-total-fee">₹0.00</strong>
+    </div>
+    <button class="btn bp bfull" onclick="saveLabTest()"><span class="ico">💾</span> Save Lab Test</button>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">📋</span>Lab Test Records</div>
+    <div class="fbar">
+      <input type="text" placeholder="Search patient..." id="lt-search" oninput="renderLabTests()"/>
+      <select id="lt-filter" onchange="renderLabTests()">
+        <option value="all">All</option><option value="today">Today</option><option value="active">Active</option><option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div id="lab-test-list"></div>
+  </div>
+</div>
+
+<!-- ═══ PROFIT & FEES (admin + doctor) ═══ -->
+<div class="page" id="sec-profit">
+  <div class="ph1">Profit & Fees</div>
+  <div class="ph2">Detailed breakdown by category</div>
+
+  <!-- Monthly profit -->
+  <div class="card">
+    <div class="card-hd"><span class="ico">📅</span>Monthly Breakdown</div>
+    <div class="tabs" style="margin-bottom:10px">
+      <div class="tab active" onclick="switchProfitTab('month',this)">This Month</div>
+      <div class="tab" onclick="switchProfitTab('all',this)">All Time</div>
+    </div>
+    <div id="profit-breakdown">
+      <div class="profit-box">
+        <div class="profit-row"><span class="profit-label">💊 Medicine Profit</span><span class="profit-val" style="color:var(--g)" id="pr-med">₹0</span></div>
+        <div class="profit-row"><span class="profit-label" style="font-size:11px;color:var(--t3)">  Revenue</span><span style="font-size:11px;color:var(--bl)" id="pr-med-rev">₹0</span></div>
+        <div class="profit-row"><span class="profit-label" style="font-size:11px;color:var(--t3)">  Cost</span><span style="font-size:11px;color:var(--red)" id="pr-med-cost">₹0</span></div>
+        <div class="profit-row"><span class="profit-label" style="font-size:11px;color:var(--t3)">  Free Samples</span><span style="font-size:11px;color:var(--g)" id="pr-free">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🩺 Consultation Fees</span><span class="profit-val" style="color:var(--bl)" id="pr-con">₹0</span></div>
+        <div class="profit-row"><span class="profit-label">🔬 Lab Test Fees</span><span class="profit-val" style="color:var(--teal)" id="pr-lab">₹0</span></div>
+        <div class="profit-row total"><span class="profit-label" style="color:var(--t)">Net Profit</span><span class="profit-val" style="color:var(--g);font-size:17px" id="pr-net">₹0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Consultation fee summary -->
+  <div class="card">
+    <div class="card-hd"><span class="ico">🩺</span>Consultation Fee Summary</div>
+    <div id="consult-fee-summary">
+      <div class="fr">
+        <div class="fg"><label>Filter</label>
+          <select id="cf-filter" onchange="renderConsultFeeSummary()">
+            <option value="today">Today</option><option value="month">This Month</option><option value="all">All Time</option>
+          </select>
+        </div>
+      </div>
+      <div id="consult-fee-list"></div>
+    </div>
+  </div>
+
+  <!-- Lab fee summary -->
+  <div class="card">
+    <div class="card-hd"><span class="ico">🔬</span>Lab Fee Summary</div>
+    <div id="lab-fee-summary">
+      <div id="lab-fee-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="page" id="sec-settings">
+  <div class="ph1">Settings</div>
+  <div class="ph2">Configure store · Admin only</div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">🏥</span>Store Info</div>
+    <div class="fr"><div class="fg"><label>Pharmacy Name</label><input type="text" id="s-pname"/></div></div>
+    <div class="fr"><div class="fg"><label>City</label><input type="text" id="s-city"/></div><div class="fg"><label>GSTIN</label><input type="text" id="s-gstin"/></div></div>
+    <div class="fr"><div class="fg"><label>Bill Footer</label><input type="text" id="s-footer"/></div></div>
+    <button class="btn bp" onclick="saveSettings('store')" style="margin-top:8px"><span class="ico">💾</span> Save Store Info</button>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">🔔</span>Alert Thresholds</div>
+    <div class="fr">
+      <div class="fg"><label>Low Stock Alert (units)</label><input type="number" id="s-lowstk" inputmode="numeric"/></div>
+      <div class="fg"><label>Expiry Alert (days)</label><input type="number" id="s-expdays" inputmode="numeric"/></div>
+    </div>
+    <button class="btn bp" onclick="saveSettings('alerts')" style="margin-top:4px"><span class="ico">💾</span> Save Alert Settings</button>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="ico">👥</span>User Management</div>
+    <div id="users-list" style="margin-bottom:12px"></div>
+    <div class="card-hd" style="margin-top:4px"><span class="ico">➕</span>Add User</div>
+    <div class="fr">
+      <div class="fg"><label>Username</label><input type="text" id="u-username" placeholder="e.g. doctor2"/></div>
+      <div class="fg"><label>Password</label><input type="text" id="u-password" placeholder="pass@123"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Full Name</label><input type="text" id="u-fullname" placeholder="Dr. Name"/></div>
+      <div class="fg"><label>Role</label>
+        <select id="u-role">
+          <option value="doctor">Doctor</option>
+          <option value="pharmacist_admin">Pharmacist Admin</option>
+          <option value="pharmacist_staff">Pharmacist Staff</option>
+          <option value="lab_tech">Lab Technician</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr"><div class="fg"><label>Consultation Fee (₹) — for doctors</label><input type="number" id="u-fee" value="0" inputmode="decimal"/></div></div>
+    <button class="btn bp" onclick="addUser()"><span class="ico">➕</span> Add User</button>
+  </div>
+</div>
+
+</div><!-- pages -->
+
+<!-- BOTTOM NAV (dynamic per role) -->
+<nav class="bottom-nav" id="bottom-nav"></nav>
+
+</div><!-- app -->
+
+<script>
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+var STATE = {
+  role:'', username:'', fullName:'', userId:0,
+  medicines:[], queue:[], served:[], bills:[], consultations:[], labTests:[], stats:{}, settings:{},
+  billItems:[], rxItems:[], ltItems:[],
+  billNo:1, serveTarget:null, cancelTarget:null
+};
+
+// ══════════════════════════════════════════════
+// API
+// ══════════════════════════════════════════════
+async function api(method, url, body){
+  try{
+    var r = await fetch(url,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+    if(r.status===401){window.location.href='/login';throw new Error('Unauthorized');}
+    if(r.status===403){toast('Access denied','error');throw new Error('Forbidden');}
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }catch(e){
+    if(!['Unauthorized','Forbidden'].includes(e.message)) toast('Error: '+e.message,'error');
+    throw e;
+  }
+}
+var GET  = u    => api('GET',  u);
+var POST = (u,b)=> api('POST', u, b);
+var PUT  = (u,b)=> api('PUT',  u, b);
+var DEL  = u    => api('DELETE',u);
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function toast(msg, type, dur=3500){
+  var icons={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+  var el = document.createElement('div');
+  el.className='toast '+(type||'info');
+  el.innerHTML=`<span class="ico">${icons[type]||'ℹ️'}</span>${msg}`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.remove(), dur);
+}
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+var NAV_CONFIGS = {
+  pharmacist_admin:[
+    {id:'dashboard',ico:'🏠',lbl:'Home'},
+    {id:'inventory',ico:'💊',lbl:'Stock'},
+    {id:'billing',  ico:'🧾',lbl:'Bills'},
+    {id:'queue',    ico:'👥',lbl:'Queue',badge:'q'},
+    {id:'lab',      ico:'🔬',lbl:'Lab'},
+    {id:'profit',   ico:'📈',lbl:'Profit'},
+    {id:'settings', ico:'⚙️', lbl:'Settings'},
+  ],
+  doctor:[
+    {id:'dashboard',       ico:'🏠',lbl:'Home'},
+    {id:'consultation',    ico:'🩺',lbl:'Consult'},
+    {id:'consult-history', ico:'📋',lbl:'History'},
+    {id:'queue',           ico:'👥',lbl:'Queue',badge:'q'},
+    {id:'lab',             ico:'🔬',lbl:'Lab'},
+    {id:'profit',          ico:'💰',lbl:'Fees'},
+    {id:'alerts',          ico:'🔔',lbl:'Alerts',badge:'a'},
+  ],
+  pharmacist_staff:[
+    {id:'dashboard',ico:'🏠',lbl:'Home'},
+    {id:'billing',  ico:'🧾',lbl:'Bills'},
+    {id:'queue',    ico:'👥',lbl:'Queue',badge:'q'},
+    {id:'served',   ico:'✅',lbl:'Served',badge:'s'},
+    {id:'alerts',   ico:'🔔',lbl:'Alerts',badge:'a'},
+  ],
+  lab_tech:[
+    {id:'dashboard',ico:'🏠',lbl:'Home'},
+    {id:'lab',      ico:'🔬',lbl:'Tests'},
+    {id:'queue',    ico:'👥',lbl:'Queue',badge:'q'},
+    {id:'served',   ico:'✅',lbl:'Served'},
+  ],
+};
+
+function buildNav(){
+  var items = NAV_CONFIGS[STATE.role] || NAV_CONFIGS.pharmacist_staff;
+  var nav = document.getElementById('bottom-nav');
+  nav.innerHTML = items.map(n=>{
+    var badge = n.badge ? `<span class="bn-cnt" id="bn-${n.badge}" style="display:none">0</span>` : '';
+    return `<div class="bn" data-page="${n.id}" onclick="nav('${n.id}')">
+      <div class="bn-ico">${n.ico}${badge}</div>
+      <span class="bn-lbl">${n.lbl}</span>
+    </div>`;
+  }).join('');
+}
+
+var currentPage = 'dashboard';
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  var sec = document.getElementById('sec-'+id);
+  if(!sec) return;
+  sec.classList.add('active');
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('active'));
+  var bn = document.querySelector(`[data-page="${id}"]`);
+  if(bn) bn.classList.add('active');
+  currentPage = id;
+  closeDD();
+  var actions = {
+    dashboard: renderDashboard, inventory: renderInventory,
+    billing: ()=>{populateMedSel();renderBills();loadPendingPrescriptions();},
+    queue: renderQueue, served: renderServed,
+    alerts: renderAlerts, profit: renderProfit,
+    'consult-history': renderConsultHistory,
+    lab: renderLabTests, settings: renderSettings
+  };
+  if(actions[id]) actions[id]();
+}
+
+// ══════════════════════════════════════════════
+// DROPDOWN & MODALS
+// ══════════════════════════════════════════════
+function toggleDD(){document.getElementById('dd-menu').classList.toggle('open');}
+function closeDD(){document.getElementById('dd-menu').classList.remove('open');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.tb-user')&&!e.target.closest('#dd-menu')) closeDD();
+});
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+async function doLogout(){await POST('/api/logout');window.location.href='/login';}
+
+async function changePw(){
+  var cur=document.getElementById('pw-cur').value;
+  var nw=document.getElementById('pw-new').value;
+  var cf=document.getElementById('pw-cf').value;
+  var err=document.getElementById('pw-err');
+  if(!cur||!nw||!cf){err.textContent='All fields required';err.style.display='block';return;}
+  if(nw!==cf){err.textContent='Passwords do not match';err.style.display='block';return;}
+  if(nw.length<6){err.textContent='Min 6 characters';err.style.display='block';return;}
+  try{
+    await POST('/api/change-password',{current:cur,new_password:nw});
+    closeModal('pw-modal');toast('Password changed successfully','success');
+  }catch(e){err.textContent='Current password incorrect';err.style.display='block';}
+}
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+function today(){return new Date().toISOString().split('T')[0];}
+function daysTo(exp){return Math.ceil((new Date(exp)-new Date())/86400000);}
+function fmtD(s){if(!s)return '—';return new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function fmtDT(s){if(!s)return '—';var d=new Date(s);return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
+function initials(n){return (n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase();}
+function avColArr(){return['#00c48c','#4a9eff','#b06eff','#f5a623','#00d4c8','#ff5c5c'];}
+function avCol(id){var a=avColArr();return a[id%a.length];}
+function exBadge(e){var d=daysTo(e);if(d<0)return '<span class="badge br2">Expired</span>';if(d<=30)return '<span class="badge ba3">'+d+'d</span>';return '<span class="badge bg2">OK</span>';}
+function stkBadge(s,t){if(s===0)return '<span class="badge br2">Out</span>';if(s<(t||50))return '<span class="badge ba3">Low</span>';return '<span class="badge bg2">Good</span>';}
+function sbar(s,t){var max=Math.max(s,(t||50)*2,100),pct=Math.min(100,Math.round(s/max*100)),c=s===0?'#ff5c5c':s<(t||50)?'#f5a623':'#00c48c';return `<div class="sbar"><div class="sbar-f" style="width:${pct}%;background:${c}"></div></div>`;}
+function priBadge(p){return p==='urgent'?'<span class="badge br2">Urgent</span>':p==='senior'?'<span class="badge bb3">Senior</span>':'<span class="badge bgy">Normal</span>';}
+function pmBadge(m){var cls={cash:'pm-cash',upi:'pm-upi',online:'pm-online',pending:'pm-pending'};var ico={cash:'💵',upi:'📱',online:'🌐',pending:'⏳'};return `<span class="payment-badge ${cls[m]||'pm-cash'}">${ico[m]||'💵'} ${m||'cash'}</span>`;}
+function getLowStk(){return parseInt(STATE.settings.low_stock_threshold||50);}
+function getExpDays(){return parseInt(STATE.settings.expiry_alert_days||30);}
+
+// ══════════════════════════════════════════════
+// LOAD ALL
+// ══════════════════════════════════════════════
+async function loadAll(){
+  var loads = [GET('/api/medicines'),GET('/api/queue'),GET('/api/served'),GET('/api/bills'),GET('/api/stats'),GET('/api/settings')];
+  if(STATE.role==='doctor'||STATE.role==='pharmacist_admin'){
+    loads.push(GET('/api/consultations'));
+    loads.push(GET('/api/lab-tests'));
+  }
+  var results = await Promise.all(loads.map(p=>p.catch(()=>null)));
+  STATE.medicines  = results[0]||[];
+  STATE.queue      = results[1]||[];
+  STATE.served     = results[2]||[];
+  STATE.bills      = results[3]||[];
+  STATE.stats      = results[4]||{};
+  STATE.settings   = results[5]||{};
+  if(results[6]) STATE.consultations = results[6];
+  if(results[7]) STATE.labTests = results[7];
+  var maxB = STATE.bills.reduce((m,b)=>Math.max(m,parseInt((b.bill_no||'0').replace(/\D/g,''))||0),0);
+  STATE.billNo = maxB+1;
+}
+async function refreshStats(){STATE.stats=await GET('/api/stats');updateBadges();}
+
+function updateBadges(){
+  var s=STATE.stats, al=(s.expiring_soon||0)+(s.low_stock||0);
+  var qb=document.getElementById('bn-q');
+  var ab=document.getElementById('bn-a');
+  var sb=document.getElementById('bn-s');
+  var alertDot=document.getElementById('alert-dot');
+  if(qb){qb.style.display=(s.queue_count||0)>0?'':'none';qb.textContent=s.queue_count||0;}
+  if(ab){ab.style.display=al>0?'':'none';ab.textContent=al;}
+  if(sb){sb.style.display=(s.served_count||0)>0?'':'none';sb.textContent=s.served_count||0;}
+  if(alertDot) alertDot.style.display=al>0?'block':'none';
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
+async function renderDashboard(){
+  var role=STATE.role, s=STATE.stats;
+  document.getElementById('doctor-stats').style.display=role==='doctor'?'block':'none';
+  document.getElementById('pharma-admin-stats').style.display=role==='pharmacist_admin'?'block':'none';
+  document.getElementById('staff-stats').style.display=(role==='pharmacist_staff'||role==='lab_tech')?'block':'none';
+  updateBadges();
+
+  if(role==='pharmacist_admin'){
+    var si=el=>document.getElementById(el);
+    si('pa-meds').textContent=s.total_medicines||0;
+    si('pa-exp').textContent=s.expiring_soon||0;
+    si('pa-stk').textContent=s.low_stock||0;
+    si('pa-q').textContent=s.queue_count||0;
+    si('pa-con').textContent=s.today_consultations||0;
+    si('pa-lab').textContent=s.today_lab_tests||0;
+    si('pa-med-profit').textContent='₹'+(s.med_profit||0).toFixed(2);
+    si('pa-consult-profit').textContent='₹'+(s.consult_fee_total||0).toFixed(2);
+    si('pa-lab-profit').textContent='₹'+(s.lab_fee_total||0).toFixed(2);
+    si('pa-net-profit').textContent='₹'+(s.net_profit||0).toFixed(2);
+    si('pa-m-med').textContent='₹'+(s.monthly_med_profit||0).toFixed(2);
+    si('pa-m-con').textContent='₹'+(s.monthly_consult||0).toFixed(2);
+    si('pa-m-lab').textContent='₹'+(s.monthly_lab||0).toFixed(2);
+    si('pa-m-total').textContent='₹'+(s.monthly_total||0).toFixed(2);
+  }
+
+  if(role==='doctor'){
+    try{
+      var ts = await GET('/api/consultations/today-stats');
+      document.getElementById('d-pt-count').textContent=ts.count||0;
+      document.getElementById('d-fee-total').textContent='₹'+(ts.total_fee||0).toFixed(2);
+      document.getElementById('d-fee-cash').textContent='₹'+(ts.cash||0).toFixed(2);
+      document.getElementById('d-fee-upi').textContent='₹'+(ts.upi||0).toFixed(2);
+      document.getElementById('d-fee-online').textContent='₹'+(ts.online||0).toFixed(2);
+      document.getElementById('d-q-cnt').textContent=s.queue_count||0;
+    }catch(e){}
+  }
+
+  if(role==='pharmacist_staff'||role==='lab_tech'){
+    document.getElementById('st-q').textContent=s.queue_count||0;
+    document.getElementById('st-srv').textContent=s.served_count||0;
+    document.getElementById('st-queue-preview').innerHTML = renderQueuePreview(4);
+  }
+
+  if(role==='doctor'){
+    document.getElementById('d-queue-preview').innerHTML = renderQueuePreview(4);
+  }
+
+  // Alerts preview
+  renderAlertPreview();
+}
+
+function renderAlertPreview(){
+  var thresh=getLowStk(), days=getExpDays();
+  var expiring=STATE.medicines.filter(m=>{var d=daysTo(m.expiry_date);return d>=0&&d<=days;}).slice(0,3);
+  var lowStock=STATE.medicines.filter(m=>m.stock<(m.threshold||thresh)).slice(0,2);
+  var html=[
+    ...expiring.map(m=>{var d=daysTo(m.expiry_date);return `<div class="al exp" style="padding:7px 10px;margin-bottom:5px"><div><div class="al-t" style="font-size:12px;color:var(--red)">${m.name}</div><div class="al-d">${d}d · ${m.expiry_date}</div></div></div>`;}),
+    ...lowStock.map(m=>`<div class="al stk" style="padding:7px 10px;margin-bottom:5px"><div><div class="al-t" style="font-size:12px;color:var(--am)">${m.name}</div><div class="al-d">${m.stock===0?'Out of stock':m.stock+' left'}</div></div></div>`)
+  ];
+  document.getElementById('d-alerts-list').innerHTML = html.length ? html.join('') : '<div class="empty" style="padding:12px"><p>No alerts</p></div>';
+}
+
+function renderQueuePreview(limit){
+  var sorted=[...STATE.queue].sort((a,b)=>({urgent:0,senior:1,normal:2}[a.priority]-{urgent:0,senior:1,normal:2}[b.priority]));
+  if(!sorted.length) return '<div class="empty" style="padding:12px"><p>No patients waiting</p></div>';
+  return sorted.slice(0,limit).map((p,i)=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--br)"><div class="q-av ${p.priority}" style="width:26px;height:26px;font-size:10px">${i+1}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${p.patient_name}</div><div style="font-size:10px;color:var(--t3)">${p.issue||'—'}</div></div>${priBadge(p.priority)}</div>`).join('') + (sorted.length>limit?`<div style="text-align:center;font-size:11px;color:var(--t3);padding:5px">+${sorted.length-limit} more</div>`:'');
+}
+
+// ══════════════════════════════════════════════
+// CONSULTATION (Doctor)
+// ══════════════════════════════════════════════
+var rxItems = [];
+
+function buildMedDatalist(){
+  var dl=document.getElementById('med-list');
+  if(dl) dl.innerHTML=STATE.medicines.map(m=>`<option value="${m.name}">`).join('');
+}
+
+function addRxItem(){
+  var name=document.getElementById('rx-med-name').value.trim();
+  if(!name){toast('Enter medicine name','error');return;}
+  var dm=parseInt(document.getElementById('rx-d-morn').value)||0;
+  var da=parseInt(document.getElementById('rx-d-aft').value)||0;
+  var de=parseInt(document.getElementById('rx-d-eve').value)||0;
+  var dn=parseInt(document.getElementById('rx-d-night').value)||0;
+  var qty=parseInt(document.getElementById('rx-qty').value)||0;
+  var days=parseInt(document.getElementById('rx-days').value)||0;
+  var instr=document.getElementById('rx-instr').value.trim();
+  var med=STATE.medicines.find(m=>m.name.toLowerCase()===name.toLowerCase());
+  rxItems.push({medicine_name:name,medicine_id:med?med.id:null,dosage_morning:dm,dosage_afternoon:da,dosage_evening:de,dosage_night:dn,quantity:qty,days,instructions:instr});
+  renderRxList();
+  ['rx-med-name','rx-qty','rx-days','rx-instr'].forEach(i=>document.getElementById(i).value='');
+  ['rx-d-morn','rx-d-aft','rx-d-eve','rx-d-night'].forEach(i=>document.getElementById(i).value='0');
+}
+
+function removeRxItem(i){rxItems.splice(i,1);renderRxList();}
+
+function renderRxList(){
+  var el=document.getElementById('rx-list');
+  if(!rxItems.length){el.innerHTML='';return;}
+  el.innerHTML=rxItems.map((it,i)=>`<div class="rx-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div class="rx-name">${it.medicine_name}${it.quantity?' — '+it.quantity+' tablets':''}</div>
+      <button class="btn bd bsm" onclick="removeRxItem(${i})" style="padding:3px 7px">✕</button>
+    </div>
+    <div class="rx-dosage">
+      <div class="rx-dose-slot ${it.dosage_morning>0?'active':''}">🌅 ${it.dosage_morning}</div>
+      <div class="rx-dose-slot ${it.dosage_afternoon>0?'active':''}">☀️ ${it.dosage_afternoon}</div>
+      <div class="rx-dose-slot ${it.dosage_evening>0?'active':''}">🌆 ${it.dosage_evening}</div>
+      <div class="rx-dose-slot ${it.dosage_night>0?'active':''}">🌙 ${it.dosage_night}</div>
+    </div>
+    <div class="rx-info">${it.days?it.days+' days':''}${it.instructions?' · '+it.instructions:''}</div>
+  </div>`).join('');
+}
+
+async function saveConsultation(){
+  var name=document.getElementById('c-name').value.trim();
+  if(!name){toast('Enter patient name','error');return;}
+  var fee=parseFloat(document.getElementById('c-fee').value)||0;
+  var c=await POST('/api/consultations',{
+    patient_name:name,patient_age:document.getElementById('c-age').value,
+    fee,payment_method:document.getElementById('c-payment').value,
+    payment_status:document.getElementById('c-pay-status').value,
+    notes:document.getElementById('c-notes').value,
+    visit_date:document.getElementById('c-date').value||today(),
+    items:rxItems
+  });
+  STATE.consultations.unshift(c);
+  toast('Consultation saved — sent to pharmacist','success',4500);
+  clearConsultation();
+  await refreshStats();renderDashboard();
+}
+
+function clearConsultation(){
+  rxItems=[];
+  ['c-name','c-age','c-notes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('c-date').value=today();
+  document.getElementById('c-fee').value='';
+  renderRxList();
+}
+
+async function cancelConsultation(id){
+  STATE.cancelTarget={type:'consultation',id};
+  document.getElementById('cancel-desc').textContent='Cancel consultation #'+id+' — fee will be voided.';
+  document.getElementById('cancel-reason').value='';
+  openModal('cancel-modal');
+}
+
+function renderConsultHistory(){
+  var q=(document.getElementById('ch-search').value||'').toLowerCase();
+  var f=document.getElementById('ch-filter').value;
+  var today2=today();
+  var rows=STATE.consultations.filter(c=>{
+    if(q&&!c.patient_name.toLowerCase().includes(q)) return false;
+    if(f==='today'&&c.visit_date!==today2) return false;
+    if(f==='active'&&c.status!=='active') return false;
+    if(f==='cancelled'&&c.status!=='cancelled') return false;
+    return true;
+  });
+  document.getElementById('ch-count').textContent=rows.length+' consultations';
+  var el=document.getElementById('consult-history-list');
+  if(!rows.length){el.innerHTML='<div class="empty"><span class="ico">📋</span><p>No consultations found</p></div>';return;}
+  el.innerHTML=rows.map(c=>`<div class="card" style="margin-bottom:10px;${c.status==='cancelled'?'opacity:.6':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div>
+        <div style="font-size:14px;font-weight:700">${c.patient_name}${c.patient_age?' <span style="font-size:11px;color:var(--t3)">'+c.patient_age+'y</span>':''}  ${c.status==='cancelled'?'<span class="cancelled-tag">CANCELLED</span>':''}</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:2px">Dr. ${c.doctor_name||'—'} · ${fmtD(c.visit_date)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:var(--g)">₹${c.fee.toFixed(2)}</div>
+        ${pmBadge(c.payment_method)}
+        <div style="margin-top:3px"><span class="badge ${c.payment_status==='paid'?'bg2':c.payment_status==='waived'?'bt2':'ba3'}">${c.payment_status}</span></div>
+      </div>
+    </div>
+    ${c.items&&c.items.length?`<div style="font-size:11px;color:var(--t3);margin-bottom:6px">💊 ${c.items.map(i=>`${i.medicine_name} (${[i.dosage_morning,i.dosage_afternoon,i.dosage_evening,i.dosage_night].join('-')}) × ${i.quantity}t / ${i.days}d`).join(' | ')}</div>`:''}
+    ${c.notes?`<div style="font-size:11px;color:var(--t3);font-style:italic">📝 ${c.notes}</div>`:''}
+    ${c.status==='active'&&STATE.role==='doctor'?`<div style="margin-top:8px"><button class="btn bd bsm" onclick="cancelConsultation(${c.id})">✕ Cancel</button></div>`:''}
+    ${c.status==='cancelled'?`<div style="font-size:11px;color:var(--red);margin-top:5px">Cancelled by ${c.cancelled_by||'—'}: ${c.cancelled_reason||'—'}</div>`:''}
+  </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// INVENTORY
+// ══════════════════════════════════════════════
+// Stock preview
+['m-qty','m-free'].forEach(id=>{
+  var el=document.getElementById(id);
+  if(el) el.addEventListener('input',()=>{
+    var q=parseInt(document.getElementById('m-qty').value)||0;
+    var f=parseInt(document.getElementById('m-free').value)||0;
+    document.getElementById('sp-qty').textContent=q;
+    document.getElementById('sp-free').textContent=f;
+    document.getElementById('stock-preview').textContent=q+f;
+  });
+});
+
+async function addMedicine(){
+  var name=document.getElementById('m-name').value.trim();
+  var exp=document.getElementById('m-expiry').value;
+  if(!name||!exp){toast('Name and expiry required','error');return;}
+  var m=await POST('/api/medicines',{
+    name,manufacturer:document.getElementById('m-mfr').value.trim(),
+    category:document.getElementById('m-cat').value,
+    buy_price:parseFloat(document.getElementById('m-buy').value)||0,
+    sell_price:parseFloat(document.getElementById('m-sell').value)||0,
+    qty_bought:parseInt(document.getElementById('m-qty').value)||0,
+    free_samples:parseInt(document.getElementById('m-free').value)||0,
+    buy_date:document.getElementById('m-bdate').value,
+    expiry_date:exp,batch_no:document.getElementById('m-batch').value.trim(),
+    threshold:parseInt(document.getElementById('m-thr').value)||50
+  });
+  STATE.medicines.push(m);
+  ['m-name','m-mfr','m-buy','m-sell','m-qty','m-free','m-bdate','m-expiry','m-batch'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('m-thr').value='50';
+  toast('Medicine saved to database','success');
+  await refreshStats();renderInventory();renderAlerts();buildMedDatalist();
+}
+
+function renderInventory(){
+  var q=(document.getElementById('inv-search').value||'').toLowerCase();
+  var f=document.getElementById('inv-filter').value;
+  var thresh=getLowStk(),days=getExpDays();
+  var rows=STATE.medicines.filter(m=>{
+    if(q&&!m.name.toLowerCase().includes(q)&&!(m.manufacturer||'').toLowerCase().includes(q))return false;
+    var d=daysTo(m.expiry_date),t=m.threshold||thresh;
+    if(f==='lowstock'&&m.stock>=t)return false;
+    if(f==='expiring'&&(d<0||d>days))return false;
+    if(f==='expired'&&d>=0)return false;
+    return true;
+  });
+  document.getElementById('inv-count').textContent=rows.length+' medicines';
+  var body=document.getElementById('inv-body');
+  if(!rows.length){body.innerHTML='<tr><td colspan="7"><div class="empty"><p>No medicines found</p></div></td></tr>';return;}
+  body.innerHTML=rows.map(m=>{
+    var q=m.qty_bought,f=m.free_samples;
+    return `<tr><td><strong style="font-size:12px">${m.name}</strong><br><span style="font-size:10px;color:var(--t3)">${m.manufacturer||''}</span></td>
+    <td><div style="font-size:11px;font-weight:700;color:var(--g)">${q}<span style="color:var(--t3)">+</span>${f}</div><div style="font-size:10px;color:var(--t3)">= ${m.stock}</div>${sbar(m.stock,m.threshold||thresh)}</td>
+    <td>₹${m.buy_price.toFixed(2)}</td><td>₹${m.sell_price.toFixed(2)}</td>
+    <td style="font-size:11px">${m.expiry_date}</td>
+    <td>${exBadge(m.expiry_date)} ${stkBadge(m.stock,m.threshold||thresh)}</td>
+    <td><button class="btn bd bsm" onclick="deleteMed(${m.id})" style="padding:3px 7px">Del</button></td></tr>`;
+  }).join('');
+}
+
+async function deleteMed(id){
+  if(!confirm('Delete this medicine?'))return;
+  await DEL('/api/medicines/'+id);
+  STATE.medicines=STATE.medicines.filter(m=>m.id!==id);
+  toast('Deleted','warning');
+  await refreshStats();renderInventory();renderAlerts();
+}
+
+// ══════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════
+function renderAlerts(){
+  var thresh=getLowStk(),days=getExpDays();
+  var expiring=STATE.medicines.filter(m=>{var d=daysTo(m.expiry_date);return d>=0&&d<=days;}).sort((a,b)=>daysTo(a.expiry_date)-daysTo(b.expiry_date));
+  var lowStock=STATE.medicines.filter(m=>m.stock<(m.threshold||thresh));
+  document.getElementById('exp-cnt').textContent=expiring.length;
+  document.getElementById('stk-cnt').textContent=lowStock.length;
+  document.getElementById('exp-list').innerHTML=expiring.length?expiring.map(m=>{var d=daysTo(m.expiry_date);return `<div class="al exp"><span class="ico">⚠️</span><div><div class="al-t" style="color:var(--red)">${m.name}</div><div class="al-d">${d} day${d===1?'':'s'} · ${m.expiry_date}${m.batch_no?' · '+m.batch_no:''}</div></div><span class="badge br2" style="margin-left:auto;flex-shrink:0">${d}d</span></div>`;}).join(''):'<div class="empty"><p>No expiry alerts</p></div>';
+  document.getElementById('stk-list').innerHTML=lowStock.length?lowStock.map(m=>{var oos=m.stock===0;return `<div class="al ${oos?'oos':'stk'}"><span class="ico">${oos?'🚫':'📉'}</span><div><div class="al-t" style="color:${oos?'var(--pu)':'var(--am)'}">${m.name}${oos?' — OUT':''}</div><div class="al-d">${oos?'Reorder immediately':m.stock+' left · alert at '+(m.threshold||thresh)}</div></div></div>`;}).join(''):'<div class="empty"><p>All medicines stocked</p></div>';
+}
+
+// ══════════════════════════════════════════════
+// BILLING
+// ══════════════════════════════════════════════
+function populateMedSel(){
+  var sel=document.getElementById('b-med');
+  if(!sel)return;
+  sel.innerHTML='<option value="">Choose medicine...</option>'+STATE.medicines.map(m=>`<option value="${m.id}" data-sell="${m.sell_price}" data-buy="${m.buy_price}" data-stock="${m.stock}">${m.name} [${m.stock}]${m.stock<(m.threshold||getLowStk())?' ⚠':''}  ₹${m.sell_price.toFixed(2)}</option>`).join('');
+}
+
+async function loadPendingPrescriptions(){
+  // Show prescriptions not yet billed
+  if(STATE.role!=='pharmacist_admin'&&STATE.role!=='pharmacist_staff')return;
+  var pending=STATE.consultations.filter(c=>c.status==='active'&&c.items&&c.items.length&&!STATE.bills.find(b=>b.consultation_id===c.id&&b.status==='active'));
+  var sec=document.getElementById('pending-rx-section');
+  var lst=document.getElementById('pending-rx-list');
+  if(!pending.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  lst.innerHTML=pending.slice(0,10).map(c=>`<div style="background:var(--bg3);border-radius:var(--r);padding:10px 12px;margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div><strong>${c.patient_name}</strong>${c.patient_age?' <span style="font-size:11px;color:var(--t3)">'+c.patient_age+'y</span>':''}</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <span style="font-size:11px;color:var(--t3)">Dr. ${c.doctor_name}</span>
+        <button class="btn bp bsm" onclick="loadRxToBill(${c.id})"><span>📋</span> Load to Bill</button>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--t3)">${c.items.map(i=>`${i.medicine_name} × ${i.quantity}t / ${i.days}d`).join(', ')}</div>
+  </div>`).join('');
+}
+
+function loadRxToBill(consultId){
+  var c=STATE.consultations.find(x=>x.id===consultId);
+  if(!c)return;
+  document.getElementById('b-patient').value=c.patient_name;
+  document.getElementById('b-age').value=c.patient_age||'';
+  document.getElementById('b-doctor').value=c.doctor_name||'';
+  // Add rx items to bill
+  STATE.billItems=[];
+  c.items.forEach(it=>{
+    var med=STATE.medicines.find(m=>m.id===it.medicine_id||m.name===it.medicine_name);
+    if(med&&it.quantity>0){
+      var dose=[it.dosage_morning,it.dosage_afternoon,it.dosage_evening,it.dosage_night].join('-');
+      STATE.billItems.push({medicine_id:med.id,medicine_name:med.name,units:it.quantity,sell_price:med.sell_price,buy_price:med.buy_price,line_total:med.sell_price*it.quantity,dosage:dose,days:it.days,instructions:it.instructions,consultation_id:c.id});
+    }
+  });
+  // Store consultation_id on form
+  document.getElementById('b-date').value=c.visit_date||today();
+  renderBillItems();updateBillPreview();
+  toast('Prescription loaded to bill for '+c.patient_name,'success');
+}
+
+function addBillItem(){
+  var sel=document.getElementById('b-med'),opt=sel.selectedOptions[0],medId=parseInt(sel.value);
+  if(!medId){toast('Select a medicine','error');return;}
+  var units=parseInt(document.getElementById('b-units').value)||0;
+  if(units<=0){toast('Enter valid qty','error');return;}
+  var stock=parseInt(opt.dataset.stock);
+  if(units>stock){toast('Only '+stock+' in stock!','error');return;}
+  var sell=parseFloat(opt.dataset.sell),buy=parseFloat(opt.dataset.buy);
+  STATE.billItems.push({medicine_id:medId,medicine_name:opt.text.split('[')[0].trim(),units,sell_price:sell,buy_price:buy,line_total:sell*units,dosage:document.getElementById('b-dosage').value.trim(),days:parseInt(document.getElementById('b-days').value)||0,instructions:document.getElementById('b-instr').value.trim()});
+  renderBillItems();
+  ['b-units','b-dosage','b-days','b-instr'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('b-med').value='';
+}
+
+function removeBillItem(i){STATE.billItems.splice(i,1);renderBillItems();}
+
+function renderBillItems(){
+  var c=document.getElementById('bill-item-list');
+  if(!STATE.billItems.length){c.innerHTML='';renderBillPreview();return;}
+  c.innerHTML='<div style="border:1px solid var(--br);border-radius:var(--r);overflow:hidden">'+STATE.billItems.map((it,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;border-bottom:1px solid var(--br)"><div><div style="font-size:13px;font-weight:600">${it.medicine_name}</div><div style="font-size:11px;color:var(--t3)">×${it.units}${it.dosage?' · '+it.dosage:''}${it.days?' · '+it.days+'d':''}${it.instructions?' · '+it.instructions:''}</div></div><div style="display:flex;align-items:center;gap:7px"><span style="font-weight:700;color:var(--g)">₹${it.line_total.toFixed(2)}</span><button class="btn bd bsm" onclick="removeBillItem(${i})" style="padding:4px 7px">✕</button></div></div>`).join('')+'</div>';
+  renderBillPreview();
+}
+
+function updateBillPreview(){
+  document.getElementById('bp-name').textContent=document.getElementById('b-patient').value||'—';
+  document.getElementById('bp-age').textContent=(document.getElementById('b-age').value||'—')+' yrs';
+  document.getElementById('bp-doc').textContent=document.getElementById('b-doctor').value||'—';
+  document.getElementById('b-bno').textContent='BILL #'+String(STATE.billNo).padStart(4,'0');
+  var d=document.getElementById('b-date').value;
+  document.getElementById('bp-date').textContent=d?fmtD(d):'—';
+  var pharmacy=STATE.settings;
+  if(document.getElementById('bp-pharmacy-name')) document.getElementById('bp-pharmacy-name').textContent=pharmacy.pharmacy_name||'MediStore Pro';
+  if(document.getElementById('bp-pharmacy-city')) document.getElementById('bp-pharmacy-city').textContent=(pharmacy.pharmacy_city||'Bellary')+' · '+( pharmacy.gstin||'');
+  if(document.getElementById('bill-footer-text')) document.getElementById('bill-footer-text').textContent=pharmacy.bill_footer||'Thank you! Visit again.';
+}
+
+function renderBillPreview(){
+  var body=document.getElementById('bill-prev-body');
+  if(!STATE.billItems.length){body.innerHTML='<tr><td colspan="6" style="text-align:center;padding:14px;color:#999;font-size:11px">No medicines added</td></tr>';document.getElementById('bill-total').textContent='₹0.00';updateBillPreview();return;}
+  body.innerHTML=STATE.billItems.map((it,i)=>`<tr><td>${i+1}</td><td><strong>${it.medicine_name}</strong>${it.instructions?`<br><span style="font-size:9px;color:#999">${it.instructions}</span>`:''}</td><td>${it.dosage||'—'}</td><td>${it.days||'—'}</td><td>${it.units}</td><td style="text-align:right;font-weight:700;color:#009e72">₹${it.line_total.toFixed(2)}</td></tr>`).join('');
+  var sub=STATE.billItems.reduce((s,i)=>s+i.line_total,0);
+  var disc=parseFloat(document.getElementById('b-discount').value)||0;
+  var total=sub-disc;
+  document.getElementById('b-subtotal-d').textContent='₹'+sub.toFixed(2);
+  document.getElementById('b-discount-d').textContent=disc>0?'-₹'+disc.toFixed(2):'₹0.00';
+  document.getElementById('bill-total').textContent='₹'+total.toFixed(2);
+  updateBillPreview();
+}
+
+function printBill(){if(!STATE.billItems.length){toast('Add medicines first','error');return;}window.print();}
+
+async function saveBill(){
+  if(!STATE.billItems.length){toast('Add medicines first','error');return;}
+  var sub=STATE.billItems.reduce((s,i)=>s+i.line_total,0);
+  var disc=parseFloat(document.getElementById('b-discount').value)||0;
+  var bill=await POST('/api/bills',{
+    patient_name:document.getElementById('b-patient').value||'Unknown',
+    patient_age:document.getElementById('b-age').value,
+    doctor_name:document.getElementById('b-doctor').value||'—',
+    consultation_id:STATE.billItems[0]&&STATE.billItems[0].consultation_id||null,
+    subtotal:sub,discount:disc,
+    bill_date:document.getElementById('b-date').value||today(),
+    items:STATE.billItems
+  });
+  STATE.bills.unshift(bill);STATE.billNo++;
+  STATE.medicines=await GET('/api/medicines');
+  toast('Bill saved — '+bill.bill_no,'success',4000);
+  clearBill();await refreshStats();renderInventory();renderAlerts();
+}
+
+function clearBill(){
+  STATE.billItems=[];
+  ['b-patient','b-age','b-doctor'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('b-date').value=today();
+  document.getElementById('b-discount').value='0';
+  document.getElementById('bill-item-list').innerHTML='';
+  renderBillPreview();updateBillPreview();
+}
+
+function renderBills(){
+  var q=(document.getElementById('bill-search').value||'').toLowerCase();
+  var f=document.getElementById('bill-filter').value;
+  var rows=STATE.bills.filter(b=>{
+    if(q&&!b.patient_name.toLowerCase().includes(q))return false;
+    if(f==='active'&&b.status!=='active')return false;
+    if(f==='cancelled'&&b.status!=='cancelled')return false;
+    return true;
+  });
+  var el=document.getElementById('bills-list');
+  if(!rows.length){el.innerHTML='<div class="empty"><span class="ico">🧾</span><p>No bills found</p></div>';return;}
+  el.innerHTML=rows.slice(0,30).map(b=>`<div class="card" style="margin-bottom:8px;${b.status==='cancelled'?'opacity:.6':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div>
+        <span class="badge bg2" style="font-size:10px">${b.bill_no}</span>
+        <div style="font-size:13px;font-weight:600;margin-top:3px">${b.patient_name}${b.patient_age?' <span style="font-size:11px;color:var(--t3)">'+b.patient_age+'y</span>':''} ${b.status==='cancelled'?'<span class="cancelled-tag">CANCELLED</span>':''}</div>
+        <div style="font-size:11px;color:var(--t3)">Dr. ${b.doctor_name||'—'} · ${fmtD(b.bill_date)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:var(--g)">₹${b.total.toFixed(2)}</div>
+        ${b.discount>0?`<div style="font-size:11px;color:var(--red)">-₹${b.discount.toFixed(2)} disc</div>`:''}
+      </div>
+    </div>
+    ${b.items&&b.items.length?`<div style="font-size:11px;color:var(--t3);margin-bottom:6px">💊 ${b.items.map(i=>i.medicine_name+'×'+i.quantity).join(', ')}</div>`:''}
+    ${b.status==='active'&&(STATE.role==='pharmacist_admin'||STATE.role==='doctor')?`<button class="btn bd bsm" onclick="cancelBill(${b.id})" style="margin-top:4px">✕ Cancel Bill</button>`:''}
+    ${b.status==='cancelled'?`<div style="font-size:11px;color:var(--red);margin-top:4px">Cancelled by ${b.cancelled_by||'—'}: ${b.cancelled_reason||'—'}</div>`:''}
+  </div>`).join('');
+}
+
+async function cancelBill(id){
+  STATE.cancelTarget={type:'bill',id};
+  document.getElementById('cancel-desc').textContent='Cancel bill — stock will be restored automatically.';
+  document.getElementById('cancel-reason').value='';
+  openModal('cancel-modal');
+}
+
+// ══════════════════════════════════════════════
+// CANCEL HANDLER
+// ══════════════════════════════════════════════
+async function confirmCancel(){
+  var reason=document.getElementById('cancel-reason').value.trim();
+  if(!reason){toast('Enter cancellation reason','error');return;}
+  var ct=STATE.cancelTarget;
+  if(!ct)return;
+  try{
+    if(ct.type==='bill'){
+      await POST('/api/bills/'+ct.id+'/cancel',{reason});
+      var b=STATE.bills.find(x=>x.id===ct.id);
+      if(b){b.status='cancelled';b.cancelled_by=STATE.fullName;b.cancelled_reason=reason;}
+      STATE.medicines=await GET('/api/medicines');
+      toast('Bill cancelled — stock restored','warning');
+      renderBills();renderInventory();
+    } else if(ct.type==='consultation'){
+      await POST('/api/consultations/'+ct.id+'/cancel',{reason});
+      var c=STATE.consultations.find(x=>x.id===ct.id);
+      if(c){c.status='cancelled';c.cancelled_by=STATE.fullName;c.cancelled_reason=reason;}
+      toast('Consultation cancelled','warning');
+      renderConsultHistory();
+    } else if(ct.type==='lab'){
+      await POST('/api/lab-tests/'+ct.id+'/cancel',{reason});
+      var l=STATE.labTests.find(x=>x.id===ct.id);
+      if(l){l.status='cancelled';l.cancelled_by=STATE.fullName;l.cancelled_reason=reason;}
+      toast('Lab test cancelled','warning');
+      renderLabTests();
+    }
+    await refreshStats();renderDashboard();
+    closeModal('cancel-modal');
+    STATE.cancelTarget=null;
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════
+// QUEUE
+// ══════════════════════════════════════════════
+async function addQueue(){
+  var name=document.getElementById('q-name').value.trim();
+  if(!name){toast('Enter patient name','error');return;}
+  var p=await POST('/api/queue',{patient_name:name,age:document.getElementById('q-age').value,issue:document.getElementById('q-issue').value.trim(),priority:document.getElementById('q-pri').value});
+  STATE.queue.push(p);
+  ['q-name','q-age','q-issue'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('q-pri').value='normal';
+  toast(name+' added to queue','success');
+  await refreshStats();renderQueue();
+}
+
+function renderQueue(){
+  var cnt=STATE.queue.length;
+  var qb=document.getElementById('q-cnt');if(qb)qb.textContent=cnt;
+  var bnq=document.getElementById('bn-q');if(bnq){bnq.style.display=cnt>0?'':'none';bnq.textContent=cnt;}
+  var el=document.getElementById('queue-list');
+  if(!cnt){el.innerHTML='<div class="empty"><span class="ico">📋</span><p>No patients waiting</p></div>';return;}
+  var sorted=[...STATE.queue].sort((a,b)=>({urgent:0,senior:1,normal:2}[a.priority]-{urgent:0,senior:1,normal:2}[b.priority]));
+  el.innerHTML=sorted.map((p,i)=>`<div class="qi">
+    <div class="q-av ${p.priority}">${i+1}</div>
+    <div style="flex:1">
+      <div class="q-n">${p.patient_name}${p.age?' <span style="font-size:10px;color:var(--t3)">'+p.age+'y</span>':''} ${priBadge(p.priority)}</div>
+      <div class="q-d">${p.issue||'—'}</div>
+      <div class="q-tm">Arrived ${fmtDT(p.arrived_at)}</div>
+      <div class="q-acts">
+        <button class="btn bs bsm" onclick="openServeModal(${p.id},'${p.patient_name.replace(/'/g,"\\'")}')"><span>✓</span> Served</button>
+        <select class="btn bsm" style="padding:5px 8px" onchange="changePriority(${p.id},this.value)">
+          <option value="">Change Priority</option>
+          <option value="urgent">→ Urgent</option><option value="senior">→ Senior</option><option value="normal">→ Normal</option>
+        </select>
+        <button class="btn bd bsm" onclick="removeQueue(${p.id})"><span>🗑</span></button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+
+function openServeModal(id,name){STATE.serveTarget=id;document.getElementById('serve-pt-name').textContent=name;document.getElementById('serve-notes').value='';openModal('serve-modal');}
+
+async function confirmServe(){
+  if(!STATE.serveTarget)return;
+  var notes=document.getElementById('serve-notes').value.trim();
+  var res=await POST('/api/queue/'+STATE.serveTarget+'/serve',{notes});
+  STATE.queue=STATE.queue.filter(q=>q.id!==STATE.serveTarget);
+  STATE.served=await GET('/api/served');
+  closeModal('serve-modal');
+  toast(res.patient.patient_name+' → Served ✓','success',4000);
+  STATE.serveTarget=null;
+  await refreshStats();renderQueue();renderServed();
+}
+
+async function changePriority(id,priority){
+  if(!priority)return;
+  await PUT('/api/queue/'+id,{priority});
+  var p=STATE.queue.find(q=>q.id===id);if(p)p.priority=priority;
+  toast('Priority updated','info');renderQueue();
+}
+
+async function removeQueue(id){
+  if(!confirm('Remove from queue?'))return;
+  await DEL('/api/queue/'+id);
+  STATE.queue=STATE.queue.filter(q=>q.id!==id);
+  await refreshStats();renderQueue();
+}
+
+// ══════════════════════════════════════════════
+// SERVED PATIENTS
+// ══════════════════════════════════════════════
+function renderServed(){
+  var q=(document.getElementById('srv-search').value||'').toLowerCase();
+  var f=document.getElementById('srv-filter').value,now=new Date();
+  var rows=STATE.served.filter(p=>{
+    if(q&&!p.patient_name.toLowerCase().includes(q))return false;
+    if(f==='today'){var d=new Date(p.served_at);return d.toDateString()===now.toDateString();}
+    if(f==='week'){var d=new Date(p.served_at);return (now-d)<7*86400000;}
+    return true;
+  });
+  document.getElementById('srv-cnt-lbl').textContent=rows.length+' patients';
+  var el=document.getElementById('served-list');
+  if(!rows.length){el.innerHTML='<div class="empty"><span class="ico">✅</span><p>No served patients found</p></div>';return;}
+  el.innerHTML=rows.map(p=>{
+    var c=avCol(p.id);
+    return `<div class="sc"><div class="s-av" style="background:${c}18;color:${c}">${initials(p.patient_name)}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${p.patient_name}${p.age?' <span style="font-size:11px;color:var(--t3)">'+p.age+'y</span>':''} ${priBadge(p.priority)}</div><div style="font-size:11px;color:var(--t3);margin-top:1px">${p.issue||'—'}${p.notes?' · '+p.notes:''}</div><div style="font-size:10px;color:var(--t4);margin-top:2px">Served ${fmtDT(p.served_at)} · by ${p.served_by||'—'}</div></div></div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// LAB TESTS
+// ══════════════════════════════════════════════
+var ltItems = [];
+
+function addLabTestItem(){
+  var name=document.getElementById('lt-tname').value.trim();
+  var fee=parseFloat(document.getElementById('lt-tfee').value)||0;
+  if(!name){toast('Enter test name','error');return;}
+  ltItems.push({test_name:name,fee});
+  renderLtItems();
+  document.getElementById('lt-tname').value='';
+  document.getElementById('lt-tfee').value='';
+}
+
+function removeLtItem(i){ltItems.splice(i,1);renderLtItems();}
+
+function renderLtItems(){
+  var el=document.getElementById('lt-items-list');
+  el.innerHTML=ltItems.map((it,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--bg3);border-radius:var(--r);margin-bottom:5px"><div><div style="font-size:13px;font-weight:600">${it.test_name}</div></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;color:var(--teal)">₹${it.fee.toFixed(2)}</span><button class="btn bd bsm" onclick="removeLtItem(${i})" style="padding:3px 7px">✕</button></div></div>`).join('');
+  var total=ltItems.reduce((s,i)=>s+i.fee,0);
+  document.getElementById('lt-total-fee').textContent='₹'+total.toFixed(2);
+}
+
+async function saveLabTest(){
+  var name=document.getElementById('lt-name').value.trim();
+  if(!name){toast('Enter patient name','error');return;}
+  if(!ltItems.length){toast('Add at least one test','error');return;}
+  var lt=await POST('/api/lab-tests',{
+    patient_name:name,patient_age:document.getElementById('lt-age').value,
+    doctor_name:document.getElementById('lt-doc').value,
+    payment_method:document.getElementById('lt-payment').value,
+    payment_status:document.getElementById('lt-pay-status').value,
+    test_date:document.getElementById('lt-date').value||today(),
+    items:ltItems
+  });
+  STATE.labTests.unshift(lt);
+  ltItems=[];
+  ['lt-name','lt-age','lt-doc'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('lt-date').value=today();
+  renderLtItems();
+  toast('Lab test saved — '+lt.test_no,'success',4000);
+  await refreshStats();renderLabTests();
+}
+
+function renderLabTests(){
+  var q=(document.getElementById('lt-search').value||'').toLowerCase();
+  var f=document.getElementById('lt-filter').value;
+  var today2=today();
+  var rows=STATE.labTests.filter(l=>{
+    if(q&&!l.patient_name.toLowerCase().includes(q))return false;
+    if(f==='today'&&l.test_date!==today2)return false;
+    if(f==='active'&&l.status!=='active')return false;
+    if(f==='cancelled'&&l.status!=='cancelled')return false;
+    return true;
+  });
+  var el=document.getElementById('lab-test-list');
+  if(!rows.length){el.innerHTML='<div class="empty"><span class="ico">🔬</span><p>No lab tests found</p></div>';return;}
+  el.innerHTML=rows.map(l=>`<div class="card" style="margin-bottom:8px;${l.status==='cancelled'?'opacity:.6':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div>
+        <span class="badge bt2" style="font-size:10px">${l.test_no}</span>
+        <div style="font-size:13px;font-weight:600;margin-top:3px">${l.patient_name}${l.patient_age?' <span style="font-size:11px;color:var(--t3)">'+l.patient_age+'y</span>':''} ${l.status==='cancelled'?'<span class="cancelled-tag">CANCELLED</span>':''}</div>
+        <div style="font-size:11px;color:var(--t3)">by ${l.lab_tech_name} · ${fmtD(l.test_date)}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:var(--teal)">₹${l.total_fee.toFixed(2)}</div>
+        ${pmBadge(l.payment_method)}
+        <div style="margin-top:2px"><span class="badge ${l.payment_status==='paid'?'bg2':'ba3'}">${l.payment_status}</span></div>
+      </div>
+    </div>
+    ${l.status==='active'&&(STATE.role==='pharmacist_admin'||STATE.role==='doctor')?`<button class="btn bd bsm" onclick="cancelLabTest(${l.id})" style="margin-top:4px">✕ Cancel</button>`:''}
+    ${l.status==='cancelled'?`<div style="font-size:11px;color:var(--red);margin-top:4px">Cancelled by ${l.cancelled_by||'—'}: ${l.cancelled_reason||'—'}</div>`:''}
+  </div>`).join('');
+}
+
+async function cancelLabTest(id){
+  STATE.cancelTarget={type:'lab',id};
+  document.getElementById('cancel-desc').textContent='Cancel lab test — fee will be voided.';
+  document.getElementById('cancel-reason').value='';
+  openModal('cancel-modal');
+}
+
+// ══════════════════════════════════════════════
+// PROFIT
+// ══════════════════════════════════════════════
+var profitTab='month';
+function switchProfitTab(tab,el){profitTab=tab;document.querySelectorAll('#sec-profit .tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderProfit();}
+
+async function renderProfit(){
+  var s=STATE.stats;
+  if(profitTab==='month'){
+    document.getElementById('pr-med').textContent='₹'+(s.monthly_med_profit||0).toFixed(2);
+    document.getElementById('pr-con').textContent='₹'+(s.monthly_consult||0).toFixed(2);
+    document.getElementById('pr-lab').textContent='₹'+(s.monthly_lab||0).toFixed(2);
+    document.getElementById('pr-net').textContent='₹'+(s.monthly_total||0).toFixed(2);
+  } else {
+    document.getElementById('pr-med').textContent='₹'+(s.med_profit||0).toFixed(2);
+    document.getElementById('pr-con').textContent='₹'+(s.consult_fee_total||0).toFixed(2);
+    document.getElementById('pr-lab').textContent='₹'+(s.lab_fee_total||0).toFixed(2);
+    document.getElementById('pr-net').textContent='₹'+(s.net_profit||0).toFixed(2);
+  }
+  document.getElementById('pr-med-rev').textContent='₹'+(s.med_revenue||0).toFixed(2);
+  document.getElementById('pr-med-cost').textContent='₹'+(s.med_cost||0).toFixed(2);
+  document.getElementById('pr-free').textContent='₹'+(s.free_sample_value||0).toFixed(2);
+  renderConsultFeeSummary();
+  renderLabFeeSummary();
+}
+
+function renderConsultFeeSummary(){
+  var f=document.getElementById('cf-filter').value;
+  var today2=today(), month=today2.slice(0,7);
+  var rows=STATE.consultations.filter(c=>{
+    if(c.status!=='active')return false;
+    if(f==='today') return c.visit_date===today2;
+    if(f==='month') return c.visit_date&&c.visit_date.startsWith(month);
+    return true;
+  });
+  var el=document.getElementById('consult-fee-list');
+  if(!rows.length){el.innerHTML='<div class="empty" style="padding:12px"><p>No consultations found</p></div>';return;}
+  var total=rows.reduce((s,c)=>s+(c.payment_status==='paid'?c.fee:0),0);
+  el.innerHTML=`<div style="background:var(--bg3);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--t2)">${rows.length} consultations</span><span style="font-weight:700;color:var(--bl)">Total: ₹${total.toFixed(2)}</span></div>`+
+  rows.slice(0,20).map(c=>`<div class="fee-row"><div><div class="fee-label">${c.patient_name}${c.patient_age?' · '+c.patient_age+'y':''}</div><div style="font-size:10px;color:var(--t4)">${fmtD(c.visit_date)} · ${pmBadge(c.payment_method)}</div></div><div style="text-align:right"><div class="fee-val">₹${c.fee.toFixed(2)}</div><span class="badge ${c.payment_status==='paid'?'bg2':c.payment_status==='waived'?'bt2':'ba3'}">${c.payment_status}</span></div></div>`).join('');
+}
+
+function renderLabFeeSummary(){
+  var rows=STATE.labTests.filter(l=>l.status==='active');
+  var el=document.getElementById('lab-fee-list');
+  if(!rows.length){el.innerHTML='<div class="empty" style="padding:12px"><p>No lab tests found</p></div>';return;}
+  var total=rows.reduce((s,l)=>s+(l.payment_status==='paid'?l.total_fee:0),0);
+  el.innerHTML=`<div style="background:var(--bg3);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--t2)">${rows.length} tests</span><span style="font-weight:700;color:var(--teal)">Total: ₹${total.toFixed(2)}</span></div>`+
+  rows.slice(0,20).map(l=>`<div class="fee-row"><div><div class="fee-label">${l.patient_name}${l.patient_age?' · '+l.patient_age+'y':''}</div><div style="font-size:10px;color:var(--t4)">${fmtD(l.test_date)} · ${l.lab_tech_name}</div></div><div style="text-align:right"><div class="fee-val" style="color:var(--teal)">₹${l.total_fee.toFixed(2)}</div><span class="badge ${l.payment_status==='paid'?'bg2':'ba3'}">${l.payment_status}</span></div></div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════
+async function renderSettings(){
+  var s=STATE.settings;
+  document.getElementById('s-pname').value=s.pharmacy_name||'';
+  document.getElementById('s-city').value=s.pharmacy_city||'';
+  document.getElementById('s-gstin').value=s.gstin||'';
+  document.getElementById('s-footer').value=s.bill_footer||'';
+  document.getElementById('s-lowstk').value=s.low_stock_threshold||50;
+  document.getElementById('s-expdays').value=s.expiry_alert_days||30;
+  renderUsersList();
+}
+
+async function saveSettings(type){
+  var keys=type==='store'?{pharmacy_name:'s-pname',pharmacy_city:'s-city',gstin:'s-gstin',bill_footer:'s-footer'}:{low_stock_threshold:'s-lowstk',expiry_alert_days:'s-expdays'};
+  for(var [k,id] of Object.entries(keys)){
+    var el=document.getElementById(id);
+    if(el){await POST('/api/settings',{key:k,value:el.value.trim()});STATE.settings[k]=el.value.trim();}
+  }
+  toast('Settings saved','success');
+  if(type==='store')updateBillPreview();
+}
+
+async function renderUsersList(){
+  try{
+    var users=await GET('/api/users');
+    var roleColors={pharmacist_admin:'var(--g)',doctor:'var(--bl)',pharmacist_staff:'var(--am)',lab_tech:'var(--teal)'};
+    var roleIcos={pharmacist_admin:'💊',doctor:'🩺',pharmacist_staff:'🧾',lab_tech:'🔬'};
+    document.getElementById('users-list').innerHTML=users.map(u=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--br)"><div style="display:flex;align-items:center;gap:9px"><div style="width:30px;height:30px;border-radius:50%;background:${roleColors[u.role]||'var(--g)'}18;color:${roleColors[u.role]||'var(--g)'};display:flex;align-items:center;justify-content:center;font-size:14px">${roleIcos[u.role]||'👤'}</div><div><div style="font-size:13px;font-weight:600">${u.full_name||u.username}</div><div style="font-size:10px;color:var(--t3)">${u.username} · ${u.role.replace('_',' ')}</div></div></div><button class="btn bd bsm" onclick="deleteUser(${u.id})" style="padding:3px 7px">Del</button></div>`).join('');
+  }catch(e){}
+}
+
+async function addUser(){
+  var username=document.getElementById('u-username').value.trim();
+  var password=document.getElementById('u-password').value.trim();
+  var fullName=document.getElementById('u-fullname').value.trim();
+  var role=document.getElementById('u-role').value;
+  if(!username||!fullName){toast('Username and full name required','error');return;}
+  await POST('/api/users',{username,password:password||'pass@123',full_name:fullName,role,consultation_fee:parseFloat(document.getElementById('u-fee').value)||0});
+  ['u-username','u-password','u-fullname','u-fee'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('u-fee').value='0';
+  toast('User added','success');renderUsersList();
+}
+
+async function deleteUser(id){
+  if(!confirm('Delete this user?'))return;
+  await DEL('/api/users/'+id);toast('User deleted','warning');renderUsersList();
+}
+
+// ══════════════════════════════════════════════
+// ROLE THEMES
+// ══════════════════════════════════════════════
+var ROLE_CONFIG = {
+  pharmacist_admin:{ico:'💊',color:'var(--g)',label:'Pharmacist Admin'},
+  doctor:{ico:'🩺',color:'var(--bl)',label:'Doctor'},
+  pharmacist_staff:{ico:'🧾',color:'var(--am)',label:'Pharmacist Staff'},
+  lab_tech:{ico:'🔬',color:'var(--teal)',label:'Lab Technician'},
+};
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+(async function boot(){
+  try{
+    var me = await GET('/api/me');
+    STATE.role      = me.role;
+    STATE.username  = me.username;
+    STATE.fullName  = me.full_name;
+    STATE.userId    = me.id;
+
+    // Setup topbar
+    var rc = ROLE_CONFIG[me.role]||ROLE_CONFIG.pharmacist_staff;
+    document.getElementById('tb-logo').textContent=rc.ico;
+    document.getElementById('tb-logo').style.background=rc.color+'25';
+    document.getElementById('tb-name').textContent=me.full_name||me.username;
+    document.getElementById('tb-role').textContent=rc.label;
+    document.getElementById('tb-av').textContent=(me.username||'U').charAt(0).toUpperCase();
+    document.getElementById('tb-av').style.background=rc.color+'25';
+    document.getElementById('tb-av').style.color=rc.color;
+    document.getElementById('tb-un').textContent=me.username;
+    document.getElementById('dd-un').textContent=me.full_name||me.username;
+    document.getElementById('dd-role').textContent=rc.label;
+
+    // Greet
+    var h=new Date().getHours();
+    var g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+    document.getElementById('dash-greet').textContent=g+', '+(me.full_name||me.username)+'!';
+    document.getElementById('dash-sub').textContent='Bellary · MediStore Pro · '+rc.label;
+
+    // Build nav
+    buildNav();
+
+    // Prefill doctor fee
+    if(me.role==='doctor'&&me.consultation_fee){
+      document.getElementById('c-fee').value=me.consultation_fee;
+    }
+
+    // Set dates
+    document.getElementById('b-date').value=today();
+    document.getElementById('c-date').value=today();
+    document.getElementById('lt-date').value=today();
+
+    // Load data
+    await loadAll();
+    buildMedDatalist();
+    renderDashboard();
+    renderAlerts();
+    updateBillPreview();
+    if(me.role==='pharmacist_admin'||me.role==='doctor'){
+      document.getElementById('dash-alerts-preview').style.display='block';
+    }
+
+    toast('Welcome, '+me.full_name+'!','success',3500);
+  }catch(e){
+    if(!e.message.includes('Unauthorized')) toast('Boot error: '+e.message,'error');
+  }
+})();
+</script>
+</body>
+</html>
